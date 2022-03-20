@@ -4,12 +4,11 @@
 /node_modules
 /.pnp
 .pnp.js
+/.idea
+.eslintrc.json
 
 # testing
 /coverage
-
-# production
-/build
 
 # misc
 .DS_Store
