@@ -79,6 +79,42 @@ const Questions: IQuestions[] = [
     rightAnswer: 2
   },
   {
+    id: 1005,
+    difficult: QuestionDifficult.easy,
+    text: 'Как называют микроавтобусы, совершающие поездки по определённым маршрутам?',
+    variants: [
+      'Рейсовка',
+      'Путёвка',
+      'Курсовка',
+      'Маршрутка'
+    ],
+    rightAnswer: 3
+  },
+  {
+    id: 1006,
+    difficult: QuestionDifficult.easy,
+    text: 'О чём писал Грибоедов, отмечая, что он «нам сладок и приятен» ?',
+    variants: [
+      'Дым Отечества',
+      'Дух купечества',
+      'Дар пророчества',
+      'Пыл девичества'
+    ],
+    rightAnswer: 0
+  },
+  {
+    id: 1007,
+    difficult: QuestionDifficult.easy,
+    text: 'Какой специалист занимается изучением неопознанных летающих объектов?',
+    variants: [
+      'Кинолог',
+      'Уфолог',
+      'Сексопатолог',
+      'Психиатр'
+    ],
+    rightAnswer: 1
+  },
+  {
     id: 2000,
     difficult: QuestionDifficult.medium,
     text: 'Кольцо какого цвета на олимпийском флаге символизирует Европу?',
@@ -139,6 +175,42 @@ const Questions: IQuestions[] = [
     rightAnswer: 2
   },
   {
+    id: 2005,
+    difficult: QuestionDifficult.medium,
+    text: 'Как называется разновидность воды, в которой атом водорода замещён его изотопом дейтерием?',
+    variants: [
+      'Лёгкая',
+      'Средняя',
+      'Тяжёлая',
+      'Невесомая'
+    ],
+    rightAnswer: 2
+  },
+  {
+    id: 2006,
+    difficult: QuestionDifficult.medium,
+    text: 'Что такое десница?',
+    variants: [
+      'Бровь',
+      'Глаз',
+      'Шея',
+      'Рука'
+    ],
+    rightAnswer: 3
+  },
+  {
+    id: 2007,
+    difficult: QuestionDifficult.medium,
+    text: 'В какое море впадает река Урал?',
+    variants: [
+      'Каспийское',
+      'Чёрное',
+      'Азовское',
+      'Средиземное'
+    ],
+    rightAnswer: 0
+  },
+  {
     id: 3000,
     difficult: QuestionDifficult.hard,
     text: 'Что не входило в рецепт салата оливье в 1894 году?',
@@ -197,6 +269,42 @@ const Questions: IQuestions[] = [
       'Пушка'
     ],
     rightAnswer: 3
+  },
+  {
+    id: 3005,
+    difficult: QuestionDifficult.hard,
+    text: 'Каким был самый разгромный счет в истории официальных футбольных матчей?',
+    variants: [
+      '23:4',
+      '46:2',
+      '100:1',
+      '149:0'
+    ],
+    rightAnswer: 3
+  },
+  {
+    id: 3006,
+    difficult: QuestionDifficult.hard,
+    text: 'Сколько раз в сутки подзаводят куранты Спасской башни Кремля?',
+    variants: [
+      'Один',
+      'Два',
+      'Три',
+      'Четыре'
+    ],
+    rightAnswer: 1
+  },
+  {
+    id: 3007,
+    difficult: QuestionDifficult.hard,
+    text: 'Как назывался каменный монолит, на котором установлен памятник Петру I в Санкт-Петербурге?',
+    variants: [
+      'Гром-камень',
+      'Дом-камень',
+      'Гора-камень',
+      'Разрыв-камень'
+    ],
+    rightAnswer: 0
   },
 ]
 

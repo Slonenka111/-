@@ -6,6 +6,7 @@
 .pnp.js
 /.idea
 .eslintrc.json
+package-lock.json
 
 # testing
 /coverage
