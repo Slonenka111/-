@@ -22,6 +22,7 @@
 .question__container--title:before {
   content: '';
   position: absolute;
+  top: 58px;
   display: block;
   height: 4px;
   width: 100%;
@@ -29,15 +30,10 @@
   background: radial-gradient(circle, rgba(138, 43, 226, 0.5) 0%, rgba(138, 43, 226, 0.5) 10%, rgba(138, 43, 226, 0.5) 80%, rgba(138, 43, 226, 0) 98%);
 }
 
-.question__container--title:before {
-  top: 58px;
-}
-
 .question__item--title {
   width: 90%;
   min-height: 120px;
   padding: 4px;
-  display: block;
   margin-bottom: 64px;
   position: relative;
   z-index: 1;
@@ -49,12 +45,16 @@
 .question__title {
   width: 100%;
   height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin: 0;
-  padding: 25px 100px 20px;
+  padding: 20px 100px;
   text-align: center;
 
   color: #fff;
   font-size: 24px;
+  font-weight: bold;
   line-height: 1;
   border: none;
   background-color: #1D0C1E;
