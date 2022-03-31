@@ -1,8 +1,8 @@
-import { getQuestions, QuestionDifficult } from "../../data/questions";
+import { getQuestions, QuestionDifficult, IVariants } from '../../data/questions';
 
 export type TgetQuestion = [
 	questionText: string,
-	questionVariants: [string, string, string, string],
+	questionVariants: IVariants[],
 	questionId: number
 ];
 

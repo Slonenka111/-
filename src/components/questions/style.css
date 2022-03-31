@@ -20,7 +20,7 @@
 }
 
 .question__container--title:before {
-	content: "";
+	content: '';
 	position: absolute;
 	top: 58px;
 	display: block;
@@ -69,7 +69,7 @@
 
 .question__container:after,
 .question__container:before {
-	content: "";
+	content: '';
 	position: absolute;
 	display: block;
 	height: 4px;

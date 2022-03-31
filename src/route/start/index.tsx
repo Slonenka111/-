@@ -1,7 +1,7 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import logo from "../../assets/logo.png";
-import "./start.css";
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import logo from '../../assets/logo.png';
+import './start.css';
 
 const StartWindow: React.FC = () => {
 	return (
@@ -19,7 +19,7 @@ const StartWindow: React.FC = () => {
 
 const StartGameButton: React.FC = (props) => {
 	const navigate = useNavigate();
-	return <button onClick={() => navigate("/game")} {...props} />;
+	return <button onClick={() => navigate('/game')} {...props} />;
 };
 
 export default StartWindow;

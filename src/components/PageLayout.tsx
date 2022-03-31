@@ -1,5 +1,5 @@
-import React, { ReactNode } from "react";
-import "./PageLayout.css";
+import React, { ReactNode } from 'react';
+import './PageLayout.css';
 
 type Props = {
 	children: ReactNode;

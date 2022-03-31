@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { QuestionDifficult } from "../../data/questions";
-import { checkAnswer, getRandomQuestion, TgetQuestion } from "../../components/questions/";
-import "../../components/questions/style.css";
+import React, { useState } from 'react';
+import { QuestionDifficult } from '../../data/questions';
+import { checkAnswer, getRandomQuestion, TgetQuestion } from '../../components/questions/';
+import '../../components/questions/style.css';
 
 const passQuestions: number[] = [];
 const firstQuestion: TgetQuestion = getRandomQuestion(QuestionDifficult.easy, passQuestions);
@@ -12,7 +12,7 @@ const GameWindow: React.FC = () => {
 	const handelClick = (index: number) => {
 		const isRigth = checkAnswer(questionId, index);
 		if (!isRigth) {
-			console.log("Не правильно!");
+			console.log('Не правильно!');
 			return;
 		}
 		const difficult =
@@ -33,14 +33,11 @@ const GameWindow: React.FC = () => {
 				</div>
 			</div>
 			<div className="question__container">
-				{questionVariants.map((variant, index) => {
+				{questionVariants.map((variant) => {
 					return (
 						<div className="question__item">
-							<button
-								className="question__answer-btn"
-								onClick={() => handelClick(index)}
-							>
-								{variant}
+							<button className="question__answer-btn" onClick={() => handelClick(variant.id)}>
+								{variant.text}
 							</button>
 						</div>
 					);

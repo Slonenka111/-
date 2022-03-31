@@ -1,9 +1,9 @@
-import React from "react";
-import "./App.css";
-import StartWindow from "./route/start";
-import GameWindow from "./route/game";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import PageLayout from "./components/PageLayout";
+import React from 'react';
+import './App.css';
+import StartWindow from './route/start';
+import GameWindow from './route/game';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import PageLayout from './components/PageLayout';
 
 function App() {
 	return (

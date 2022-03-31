@@ -9,7 +9,7 @@ export enum QuestionDifficult {
 
 type TAnswerNumbers = 1 | 2 | 3 | 4;
 
-interface IVariants {
+export interface IVariants {
 	id: TAnswerNumbers;
 	text: string;
 }
