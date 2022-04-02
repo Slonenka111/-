@@ -1,11 +1,7 @@
 import React, {ReactNode} from 'react';
 import './PageLayout.css'
 
-type Props = {
-    children: ReactNode
-}
-
-const PageLayout: React.FC<Props> = ({children}) => {
+const PageLayout: React.FC = ({children}) => {
     return (
         <main className='main'>
             {children}
