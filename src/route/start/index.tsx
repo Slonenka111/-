@@ -19,7 +19,7 @@ const StartWindow: React.FC = () => {
 
 const StartGameButton: React.FC = props => {
     const navigate = useNavigate();
-    const handleClick = useCallback(() => navigate('/game'), []);
+    const handleClick = useCallback(() => navigate('/game'), [navigate]);
     return <button onClick={handleClick} {...props}/>
 }
 
