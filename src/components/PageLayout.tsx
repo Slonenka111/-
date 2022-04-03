@@ -1,12 +1,12 @@
-import React, { ReactNode } from 'react';
-import './PageLayout.css';
+import React from 'react';
+import './PageLayout.css'
 
-type Props = {
-	children: ReactNode;
-};
+const PageLayout: React.FC = ({children}) => {
+    return (
+        <main className='main'>
+            {children}
+        </main>
+    );
+}
 
-const PageLayout: React.FC<Props> = ({ children }) => {
-	return <main className="main">{children}</main>;
-};
-
-export default PageLayout;
+export default PageLayout

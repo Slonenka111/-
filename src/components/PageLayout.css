@@ -1,11 +1,11 @@
 .main {
-	text-align: center;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	height: 100vh;
-	width: 100vw;
-	color: white;
-	background: linear-gradient(#422742, #220e1f, #08031e);
-	gap: 12px;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    background: linear-gradient(#422742, #220e1f, #08031e);
 }
