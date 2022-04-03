@@ -1,5 +1,5 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, {useCallback} from "react";
+import {useNavigate} from 'react-router-dom';
 import logo from '../../assets/logo.png';
 import './start.css';
 
@@ -17,9 +17,10 @@ const StartWindow: React.FC = () => {
 	);
 };
 
-const StartGameButton: React.FC = (props) => {
-	const navigate = useNavigate();
-	return <button onClick={() => navigate('/game')} {...props} />;
-};
+const StartGameButton: React.FC = props => {
+    const navigate = useNavigate();
+    const handleClick = useCallback(() => navigate('/game'), [navigate]);
+    return <button onClick={handleClick} {...props}/>
+}
 
 export default StartWindow;
