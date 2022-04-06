@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+import React, {useContext, useState} from 'react';
 import { QuestionDifficult } from '../../data/questions';
 import { checkAnswer, getRandomQuestion, TgetQuestion } from '../../components/questions/';
 import '../../components/questions/style.css';
+import {GameContext} from "../../store/game-context";
 
 const passQuestions: number[] = [];
 const firstQuestion: TgetQuestion = getRandomQuestion(QuestionDifficult.easy, passQuestions);
 
 const GameWindow: React.FC = () => {
+	const { questionNumber ,setQuestionNumber } = useContext(GameContext)
+
 	const [[questionText, questionVariants, questionId], setQuestion] = useState(firstQuestion);
 
 	const handelClick = (index: number) => {
@@ -22,6 +25,7 @@ const GameWindow: React.FC = () => {
 				? QuestionDifficult.medium
 				: QuestionDifficult.hard;
 		passQuestions.push(questionId);
+		setQuestionNumber(questionNumber + 1)
 		setQuestion(getRandomQuestion(difficult, passQuestions));
 	};
 
@@ -35,7 +39,7 @@ const GameWindow: React.FC = () => {
 			<div className="question__container">
 				{questionVariants.map((variant) => {
 					return (
-						<div className="question__item">
+						<div className="question__item" key={variant.id}>
 							<button className="question__answer-btn" onClick={() => handelClick(variant.id)}>
 								{variant.text}
 							</button>

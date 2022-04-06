@@ -1,7 +1,8 @@
-import React, {useCallback} from "react";
+import React, {useCallback, useContext} from "react";
 import {useNavigate} from 'react-router-dom';
 import logo from '../../assets/logo.png';
 import './start.css'
+import {GameContext} from "../../store/game-context";
 
 const StartWindow: React.FC = () => {
     return (
@@ -18,8 +19,12 @@ const StartWindow: React.FC = () => {
 }
 
 const StartGameButton: React.FC = props => {
-    const navigate = useNavigate();
-    const handleClick = useCallback(() => navigate('/game'), [navigate]);
+	const { setIsGame } = useContext(GameContext)
+	const navigate = useNavigate();
+    const handleClick = useCallback(() => {
+		navigate('/game')
+		setIsGame(true)
+	}, [navigate]);
     return <button onClick={handleClick} {...props}/>
 }
 
