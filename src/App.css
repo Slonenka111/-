@@ -5,4 +5,10 @@
 body {
 	margin: 0;
 	font: 16px/24px sans-serif;
+	height: 100%;
+}
+
+html, #root {
+	height: 100%;
+
 }
