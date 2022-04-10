@@ -16,7 +16,7 @@ const Timer: React.FC<Props> = (timerProps) => {
 	const timer = useRef<number | undefined>();
 
 	useEffect(() => {
-		if (seconds === 0) {
+		if (seconds <= 0) {
 			onTimeExpiration && onTimeExpiration();
 		} else if (paused) {
 			onPause && onPause(seconds);
