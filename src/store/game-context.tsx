@@ -1,19 +1,19 @@
 import React from "react";
 
-interface IGameContext {
-	isGame: boolean;
-	setIsGame: (state: boolean) => void;
-	questionNumber: number;
-	setQuestionNumber: (state: number) => void;
+export interface IGameContext {
+	toggleGameState: () => void;
+	addQuestionNumber: () => void;
+	completeQuestions: (num: number) => void;
+	passQuestions: number[];
+	clearStates: () => void;
 }
 
 export const value: IGameContext = {
-	isGame: false,
-	setIsGame: () => {
-	},
-	questionNumber: 0,
-	setQuestionNumber: () => {
-	}
+	toggleGameState: () => {},
+	addQuestionNumber: () => {},
+	completeQuestions: () => {},
+	passQuestions: [],
+	clearStates: () => {},
 }
 
 export const GameContext: React.Context<IGameContext> = React.createContext(value);

@@ -1,17 +1,14 @@
-import React, {useState} from 'react';
+import React from 'react';
 import './App.css';
 import StartWindow from './route/start';
 import GameWindow from './route/game';
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import PageLayout from './components/PageLayout';
-import {GameContext} from "./store/game-context";
+import GameContextWrapper from './components/context'
 
 function App() {
-	const [isGame, setIsGame] = useState(false)
-	const [questionNumber, setQuestionNumber] = useState(0)
-
 	return (
-		<GameContext.Provider value={{isGame, setIsGame, questionNumber, setQuestionNumber}}>
+		<GameContextWrapper>
 			<PageLayout>
 				<Router>
 					<Routes>
@@ -20,7 +17,7 @@ function App() {
 					</Routes>
 				</Router>
 			</PageLayout>
-		</GameContext.Provider>
+		</GameContextWrapper>
 	);
 }
 
