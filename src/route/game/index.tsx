@@ -1,33 +1,29 @@
-import React, { useContext, useState } from "react";
-import { QuestionDifficult } from "../../data/questions";
-import { checkAnswer, getRandomQuestion } from "../../components/questions/";
+import React, { useContext } from "react";
 import "../../components/questions/style.css";
 import { GameContext } from "../../store/game-context";
 
-
-// const firstQuestion: TgetQuestion = getRandomQuestion(QuestionDifficult.easy, passQuestions);
-
 const GameWindow: React.FC = () => {
-	const { addQuestionNumber, completeQuestions, passQuestions } = useContext(GameContext);
+	const {
+		addQuestionNumber,
+		completeQuestions,
+		changeDifficult,
+		getQuestion,
+		questionText,
+		questionVariants,
+		questionId,
+		approvedAnswer
+	} = useContext(GameContext);
 
-	const [[questionText, questionVariants, questionId], setQuestion] = useState(getRandomQuestion(QuestionDifficult.easy, passQuestions));
 
 	const handelClick = (index: number) => {
-		const isRight = checkAnswer(questionId, index);
-		if (!isRight) {
+		if (!approvedAnswer?.(questionId, index)) {
 			console.log("Не правильно!");
 			return;
 		}
-		const difficult =
-			passQuestions.length < 4
-				? QuestionDifficult.easy
-				: passQuestions.length < 9
-					? QuestionDifficult.medium
-					: QuestionDifficult.hard;
-		// passQuestions.push(questionId);
-		completeQuestions(questionId);
 		addQuestionNumber();
-		setQuestion(getRandomQuestion(difficult, passQuestions));
+		completeQuestions(questionId);
+		changeDifficult();
+		getQuestion();
 	};
 
 	return (
