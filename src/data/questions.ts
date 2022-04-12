@@ -546,7 +546,7 @@ const Questions: IQuestions[] = [
 			},
 			{
 				id: 4,
-				text: '149:0"',
+				text: '149:0',
 			},
 		],
 		rightAnswer: 4,
