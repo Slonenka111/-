@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './Timer.css';
 
 interface Props {
@@ -11,7 +11,7 @@ interface Props {
 }
 
 const Timer: React.FC<Props> = (timerProps) => {
-	const {paused, duration, onTimeExpiration, onPause} = timerProps;
+	const { paused, duration, onTimeExpiration, onPause } = timerProps;
 	const [seconds, setSeconds] = useState(duration);
 	const timer = useRef<number | undefined>();
 
