@@ -123,3 +123,7 @@
 .question__item:hover .question__answer-btn {
 	background: #760376;
 }
+
+button:disabled {
+	background-color: aquamarine;
+}
