@@ -10,16 +10,10 @@ const GameWindow: React.FC = () => {
 	}, [setIsDisabled]);
 
 	const {
-		addQuestionNumber,
-		completeQuestions,
-		changeDifficult,
-		getQuestion,
 		questionText,
 		questionVariants,
-		questionId,
-		approvedAnswer
+		gameMove
 	} = useContext(GameContext);
-
 
 	const handelClick = (index: number) => {
 		toggleIsDisabled();
