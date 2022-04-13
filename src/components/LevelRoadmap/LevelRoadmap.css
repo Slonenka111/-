@@ -1,0 +1,47 @@
+.level-list {
+	list-style-type: none;
+	max-width: 250px;
+	padding: 1em;
+	width: 100%;
+	color: #e3a335;
+	background-color: #1d0c1e;
+	font-weight: bold;
+	font-size: 20px;
+	border: #e3a335 solid 3px;
+	border-radius: 20px;
+}
+
+.level-item {
+	border-radius: 10px;
+}
+
+.level-item > div {
+	display: inline-block;
+}
+
+.level-number {
+	text-align: right;
+	width: 20%;
+	margin-right: 20px;
+}
+
+.level-cost {
+	width: 60%;
+	text-align: left;
+}
+
+.level-item.safety {
+	color: white;
+}
+
+.level-item.current {
+	background: linear-gradient(#f0cb54, #e3a335);
+}
+
+.level-item.current > .level-number {
+	color: white;
+}
+
+.level-item.current > .level-cost {
+	color: black;
+}

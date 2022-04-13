@@ -5,4 +5,21 @@
 body {
 	margin: 0;
 	font: 16px/24px sans-serif;
+	height: 100%;
+}
+
+html,
+#root {
+	height: 100%;
+}
+
+.game-controls {
+	margin: auto;
+	max-width: 1000px;
+	width: 100%;
+	margin: auto;
+	display: flex;
+	align-items: center;
+	justify-content: space-evenly;
+	margin-bottom: 40px;
 }
