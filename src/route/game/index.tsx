@@ -12,6 +12,7 @@ const GameWindow: React.FC = () => {
 	}, [setIsDisabled]);
 
 	const {
+		questionNumber,
 		questionText,
 		questionVariants,
 		gameMove
@@ -29,7 +30,7 @@ const GameWindow: React.FC = () => {
 		<div>
 			<div className="game-controls">
 				<Timer paused={false} duration={30} onTimeExpiration={() => console.log('expired')} />
-				<LevelRoadmap currentLevel={passQuestions.length + 1} safetyLevels={[5, 10, 15]} />
+				<LevelRoadmap currentLevel={questionNumber + 1} safetyLevels={[5, 10, 15]} />
 			</div>
 			<div className="question">
 				<div className="question__container--title">

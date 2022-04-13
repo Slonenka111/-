@@ -3,6 +3,7 @@ import { IVariants } from "../data/questions";
 
 export interface IGameContext {
 	toggleGameState: () => void;
+	questionNumber: number;
 	questionText: string;
 	questionVariants: IVariants[];
 	questionId: number,
@@ -12,6 +13,7 @@ export interface IGameContext {
 
 export const value: IGameContext = {
 	toggleGameState: () => {},
+	questionNumber: 0,
 	questionText: '',
 	questionVariants: [],
 	questionId: 0,

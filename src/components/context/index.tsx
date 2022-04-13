@@ -48,6 +48,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 
 	const value = useMemo<IGameContext>(() => ({
 		toggleGameState,
+		questionNumber,
 		questionText,
 		questionVariants,
 		questionId,
@@ -55,6 +56,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 		// clearStates
 	}), [
 		toggleGameState,
+		questionNumber,
 		questionText,
 		questionVariants,
 		questionId,
