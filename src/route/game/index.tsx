@@ -15,7 +15,7 @@ const GameWindow: React.FC = () => {
 		gameMove
 	} = useContext(GameContext);
 
-	const handelClick = (index: number) => {
+	const handleClick = (index: number) => {
 		toggleIsDisabled();
 		setTimeout(() => {
 			toggleIsDisabled();
@@ -35,7 +35,7 @@ const GameWindow: React.FC = () => {
 					return (
 						<div className="question__item" key={variant.id}>
 							<button className="question__answer-btn" disabled={isDisabled}
-									onClick={() => handelClick(variant.id)}>
+									onClick={() => handleClick(variant.id)}>
 								{variant.text}
 							</button>
 						</div>
