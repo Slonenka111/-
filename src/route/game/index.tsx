@@ -1,37 +1,31 @@
-import React, { useState } from 'react';
-import { QuestionDifficult } from '../../data/questions';
-import { checkAnswer, getRandomQuestion, TgetQuestion } from '../../components/questions/';
+import React, { useCallback, useContext, useState } from 'react';
 import '../../components/questions/style.css';
+import { GameContext } from '../../store/game-context';
 import Timer from '../../components/Timer/Timer';
 import LevelRoadmap from '../../components/LevelRoadmap/LevelRoadmap';
 
-const passQuestions: number[] = [];
-const firstQuestion: TgetQuestion = getRandomQuestion(QuestionDifficult.easy, passQuestions);
-
 const GameWindow: React.FC = () => {
-	const [[questionText, questionVariants, questionId], setQuestion] = useState(firstQuestion);
+	const [isDisabled, setIsDisabled] = useState(false);
 
-	const handelClick = (index: number) => {
-		const isRigth = checkAnswer(questionId, index);
-		if (!isRigth) {
-			console.log('Не правильно!');
-			return;
-		}
-		const difficult =
-			passQuestions.length < 4
-				? QuestionDifficult.easy
-				: passQuestions.length < 9
-				? QuestionDifficult.medium
-				: QuestionDifficult.hard;
-		passQuestions.push(questionId);
-		setQuestion(getRandomQuestion(difficult, passQuestions));
+	const toggleIsDisabled = useCallback(() => {
+		setIsDisabled((prevState) => !prevState);
+	}, [setIsDisabled]);
+
+	const { questionNumber, questionText, questionVariants, gameMove } = useContext(GameContext);
+
+	const handleClick = (index: number) => {
+		toggleIsDisabled();
+		setTimeout(() => {
+			toggleIsDisabled();
+			gameMove(index);
+		}, 1000);
 	};
 
 	return (
 		<div>
 			<div className="game-controls">
 				<Timer paused={false} duration={30} onTimeExpiration={() => console.log('expired')} />
-				<LevelRoadmap currentLevel={passQuestions.length + 1} safetyLevels={[5, 10, 15]} />
+				<LevelRoadmap currentLevel={questionNumber + 1} safetyLevels={[5, 10, 15]} />
 			</div>
 			<div className="question">
 				<div className="question__container--title">
@@ -42,8 +36,12 @@ const GameWindow: React.FC = () => {
 				<div className="question__container">
 					{questionVariants.map((variant) => {
 						return (
-							<div className="question__item">
-								<button className="question__answer-btn" onClick={() => handelClick(variant.id)}>
+							<div className="question__item" key={variant.id}>
+								<button
+									className="question__answer-btn"
+									disabled={isDisabled}
+									onClick={() => handleClick(variant.id)}
+								>
 									{variant.text}
 								</button>
 							</div>
