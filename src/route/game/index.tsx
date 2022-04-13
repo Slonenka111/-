@@ -1,6 +1,6 @@
-import React, { useCallback, useContext, useState } from "react";
-import "../../components/questions/style.css";
-import { GameContext } from "../../store/game-context";
+import React, { useCallback, useContext, useState } from 'react';
+import '../../components/questions/style.css';
+import { GameContext } from '../../store/game-context';
 import Timer from '../../components/Timer/Timer';
 import LevelRoadmap from '../../components/LevelRoadmap/LevelRoadmap';
 
@@ -8,15 +8,10 @@ const GameWindow: React.FC = () => {
 	const [isDisabled, setIsDisabled] = useState(false);
 
 	const toggleIsDisabled = useCallback(() => {
-		setIsDisabled(prevState => !prevState);
+		setIsDisabled((prevState) => !prevState);
 	}, [setIsDisabled]);
 
-	const {
-		questionNumber,
-		questionText,
-		questionVariants,
-		gameMove
-	} = useContext(GameContext);
+	const { questionNumber, questionText, questionVariants, gameMove } = useContext(GameContext);
 
 	const handleClick = (index: number) => {
 		toggleIsDisabled();
@@ -42,8 +37,11 @@ const GameWindow: React.FC = () => {
 					{questionVariants.map((variant) => {
 						return (
 							<div className="question__item" key={variant.id}>
-								<button className="question__answer-btn" disabled={isDisabled}
-										onClick={() => handleClick(variant.id)}>
+								<button
+									className="question__answer-btn"
+									disabled={isDisabled}
+									onClick={() => handleClick(variant.id)}
+								>
 									{variant.text}
 								</button>
 							</div>
