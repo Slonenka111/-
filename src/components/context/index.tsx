@@ -1,20 +1,76 @@
-import React, { useCallback, useMemo, useState } from 'react';
-import { QuestionDifficult } from '../../data/questions';
-import { GameContext, IGameContext } from '../../store/game-context';
-import { checkAnswer, getRandomQuestion } from '../questions';
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { IVariants, QuestionDifficult } from "../../data/questions";
+import { GameContext, IGameContext, WindowState } from "../../store/game-context";
+import { checkAnswer, getRandomQuestion } from "../questions";
 
-const passQuestions: number[] = [];
+
+let passQuestions: number[] = [];
+
+const createGameStateString = (
+	isGame: WindowState,
+	questionNumber: number,
+	difficult: QuestionDifficult,
+	passQuestions: number[],
+	questionText: string,
+	questionVariants: IVariants[],
+	questionId: number): string => {
+	const gameState = {
+		isGame: isGame,
+		questionNumber: questionNumber,
+		difficult: difficult,
+		passQuestions: passQuestions,
+		questionText: questionText,
+		questionVariants: questionVariants,
+		questionId: questionId
+	};
+
+	return JSON.stringify(gameState);
+};
+
+const switchWindow = (targetWindow: WindowState) => {
+	window.location.pathname = targetWindow;
+};
 
 const GameContextWrapper: React.FC = ({ children }) => {
-	const [isGame, setIsGame] = useState(false);
+	const [isGame, setIsGame] = useState(WindowState.start);
 	const [questionNumber, setQuestionNumber] = useState(0);
 	const [difficult, setDifficult] = useState(QuestionDifficult.easy);
-	const [[questionText, questionVariants, questionId], setQuestion] = useState(
-		getRandomQuestion(difficult, passQuestions)
+	const [[questionText, questionVariants, questionId], setQuestion] = useState(() => {
+			return getRandomQuestion(difficult, passQuestions);
+		}
 	);
 
-	const toggleGameState = useCallback(() => {
-		setIsGame((prevState) => !prevState);
+	// Логика для первой отрисовки
+	useEffect(() => {
+		const gameState = JSON.parse(localStorage.getItem("GameState") as string);
+		if (!gameState) {
+			const newGameState = createGameStateString(isGame, questionNumber, difficult, passQuestions, questionText, questionVariants, questionId);
+			localStorage.setItem("GameState", newGameState);
+			switchWindow(WindowState.start);
+		} else {
+			setIsGame(gameState.isGame);
+			setQuestionNumber(gameState.questionNumber);
+			setDifficult(gameState.difficult);
+			passQuestions = gameState.passQuestions;
+			setQuestion([gameState.questionText, gameState.questionVariants, gameState.questionId]);
+		}
+		console.log(1);
+	}, []);
+
+	// Логика для игры
+	useEffect(() => {
+		const gameState = JSON.parse(localStorage.getItem("GameState") as string);
+		if (gameState) {
+			const newGameState = createGameStateString(isGame, questionNumber, difficult, passQuestions, questionText, questionVariants, questionId);
+			localStorage.setItem("GameState", newGameState);
+		}
+		console.log("localStorage");
+
+	}, [isGame, questionNumber, difficult, questionText, questionVariants, questionId]);
+
+
+	const toggleGameState = useCallback((windowState: WindowState) => {
+		setIsGame(windowState);
 	}, [setIsGame]);
 
 	const gameMove = useCallback(
@@ -23,15 +79,17 @@ const GameContextWrapper: React.FC = ({ children }) => {
 
 			// Обработка не верного ответа - проигрыша
 			if (!isRight) {
-				console.log('LOSE');
-				toggleGameState();
+				console.log("LOSE");
+				toggleGameState(WindowState.end);
+				switchWindow(WindowState.end)
 				return;
 			}
 
 			// Обработка верного ответа на 15-й вопрос - победа
 			if (questionNumber === 14) {
-				console.log('WIN');
-				toggleGameState();
+				console.log("WIN");
+				toggleGameState(WindowState.end);
+				switchWindow(WindowState.end)
 				return;
 			}
 
@@ -42,10 +100,10 @@ const GameContextWrapper: React.FC = ({ children }) => {
 				passQuestions.length < 4
 					? QuestionDifficult.easy
 					: passQuestions.length < 9
-					? QuestionDifficult.medium
-					: QuestionDifficult.hard
+						? QuestionDifficult.medium
+						: QuestionDifficult.hard
 			);
-			setQuestion(getRandomQuestion(difficult, passQuestions));
+			setQuestion(prev => getRandomQuestion(difficult, passQuestions));
 		},
 		[questionNumber, questionId, difficult, toggleGameState]
 	);
@@ -63,7 +121,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 			questionText,
 			questionVariants,
 			questionId,
-			gameMove,
+			gameMove
 			// clearStates
 		}),
 		[
@@ -72,7 +130,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 			questionText,
 			questionVariants,
 			questionId,
-			gameMove,
+			gameMove
 			// clearStates
 		]
 	);

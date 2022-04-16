@@ -22,12 +22,12 @@ const Timer: React.FC<Props> = (timerProps) => {
 			onPause && onPause(seconds);
 		} else {
 			timer.current = window.setInterval(() => setSeconds((v) => v - 1), 1000);
-			console.log(timer.current + ' started');
+			// console.log(timer.current + ' started');
 		}
 		return () => {
 			if (timer.current) {
 				window.clearInterval(timer.current);
-				console.log(timer.current + ' cleared');
+				// console.log(timer.current + ' cleared');
 				timer.current = undefined;
 			}
 		};

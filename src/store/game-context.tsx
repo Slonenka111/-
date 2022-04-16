@@ -1,8 +1,14 @@
-import React from 'react';
-import { IVariants } from '../data/questions';
+import React from "react";
+import { IVariants } from "../data/questions";
 
-export interface IGameContext {
-	toggleGameState: () => void;
+enum WindowState {
+	start = "/",
+	game = "/game",
+	end = "/end",
+}
+
+interface IGameContext {
+	toggleGameState: (state: WindowState) => void;
 	questionNumber: number;
 	questionText: string;
 	questionVariants: IVariants[];
@@ -11,15 +17,24 @@ export interface IGameContext {
 	clearStates?: () => void;
 }
 
-export const value: IGameContext = {
-	toggleGameState: () => {},
+const value: IGameContext = {
+	toggleGameState: () => {
+	},
 	questionNumber: 0,
-	questionText: '',
+	questionText: "",
 	questionVariants: [],
 	questionId: 0,
-	gameMove: () => {},
-	clearStates: () => {},
+	gameMove: () => {
+	},
+	clearStates: () => {
+	}
 };
 
-export const GameContext: React.Context<IGameContext> = React.createContext(value);
-GameContext.displayName = 'GameContext';
+const GameContext: React.Context<IGameContext> = React.createContext(value);
+GameContext.displayName = "GameContext";
+
+export {
+	WindowState, GameContext
+};
+export type { IGameContext };
+

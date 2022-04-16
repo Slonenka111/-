@@ -2,7 +2,7 @@ import React, { useCallback, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/logo.png';
 import './start.css';
-import { GameContext } from '../../store/game-context';
+import { GameContext, WindowState } from "../../store/game-context";
 
 const StartWindow: React.FC = () => {
 	return (
@@ -23,7 +23,7 @@ const StartGameButton: React.FC = (props) => {
 	const navigate = useNavigate();
 	const handleClick = useCallback(() => {
 		navigate('/game');
-		toggleGameState();
+		toggleGameState(WindowState.game);
 	}, [navigate, toggleGameState]);
 	return <button onClick={handleClick} {...props} />;
 };
