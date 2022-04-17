@@ -1,6 +1,6 @@
-import { getQuestions, QuestionDifficult, IVariants } from '../../data/questions';
+import { getQuestions, QuestionDifficult, IVariants } from "../../data/questions";
 
-export type TgetQuestion = [
+type TgetQuestion = [
 	questionText: string,
 	questionVariants: IVariants[],
 	questionId: number
@@ -12,7 +12,7 @@ const getRandom = (length: number = 1) => {
 	return Math.floor(Math.random() * length);
 };
 
-export const getRandomQuestion = (
+const getRandomQuestion = (
 	difficult: QuestionDifficult,
 	passQuestions?: number[]
 ): TgetQuestion => {
@@ -24,13 +24,21 @@ export const getRandomQuestion = (
 	return [question.text, question.variants, question.id];
 };
 
-export const getQuestionOnId = (id: number): TgetQuestion => {
+const getQuestionById = (id: number): TgetQuestion => {
 	const question = questions.filter((question) => question.id === id)[0];
 
 	return [question.text, question.variants, question.id];
 };
 
-export const checkAnswer = (id: number, index: number): boolean => {
+const checkAnswer = (id: number, index: number): boolean => {
 	const question = questions.filter((question) => question.id === id)[0];
 	return index === question?.rightAnswer;
 };
+
+export {
+	getRandomQuestion,
+	getQuestionById,
+	checkAnswer
+};
+export type { TgetQuestion };
+

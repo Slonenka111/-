@@ -7,8 +7,15 @@ enum WindowState {
 	end = "/end",
 }
 
+enum ResultGame {
+	win = "win",
+	lose = "lose",
+	default = "default"
+}
+
 interface IGameContext {
 	windowState: WindowState;
+	resultGame: string,
 	switchWindow: (state: WindowState) => void;
 	questionNumber: number;
 	questionText: string;
@@ -20,7 +27,9 @@ interface IGameContext {
 
 const value: IGameContext = {
 	windowState: WindowState.start,
-	switchWindow: () => {},
+	resultGame: ResultGame.default,
+	switchWindow: () => {
+	},
 	questionNumber: 0,
 	questionText: "",
 	questionVariants: [],
@@ -35,7 +44,7 @@ const GameContext: React.Context<IGameContext> = React.createContext(value);
 GameContext.displayName = "GameContext";
 
 export {
-	WindowState, GameContext
+	WindowState, ResultGame, GameContext
 };
 export type { IGameContext };
 
