@@ -6,19 +6,20 @@ import { checkAnswer, getRandomQuestion } from '../questions';
 const passQuestions: number[] = [];
 
 const GameContextWrapper: React.FC = ({ children }) => {
-	const [isGame, setIsGame] = useState(false);
+	const [windowState, setWindowState] = useState(false);
 	const [questionNumber, setQuestionNumber] = useState(0);
 	const [difficult, setDifficult] = useState(QuestionDifficult.easy);
 	const [[questionText, questionVariants, questionId], setQuestion] = useState(
 		getRandomQuestion(difficult, passQuestions)
 	);
+	const [score, setScore] = useState(0);
 
 	const toggleGameState = useCallback(() => {
-		setIsGame((prevState) => !prevState);
-	}, [setIsGame]);
+		setWindowState((prevState) => !prevState);
+	}, [setWindowState]);
 
 	const gameMove = useCallback(
-		(index: number) => {
+		(index: number, secondsLeft: number) => {
 			const isRight = checkAnswer(questionId, index);
 
 			// Обработка не верного ответа - проигрыша
@@ -28,6 +29,8 @@ const GameContextWrapper: React.FC = ({ children }) => {
 				return;
 			}
 
+			setScore((prev) => prev + 10 + secondsLeft);
+
 			// Обработка верного ответа на 15-й вопрос - победа
 			if (questionNumber === 14) {
 				console.log('WIN');
@@ -36,7 +39,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 			}
 
 			// Обработка следующего шага
-			setQuestionNumber(questionNumber + 1);
+			setQuestionNumber((prev) => prev + 1);
 			passQuestions.push(questionId);
 			setDifficult(
 				passQuestions.length < 4
@@ -51,7 +54,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 	);
 
 	// const clearStates = () => {
-	// 	setIsGame(false);
+	// 	setWindowState(false);
 	// 	setQuestionNumber(0);
 	// 	setPassQuestions([]);
 	// };
@@ -64,6 +67,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 			questionVariants,
 			questionId,
 			gameMove,
+			score,
 			// clearStates
 		}),
 		[
@@ -73,6 +77,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 			questionVariants,
 			questionId,
 			gameMove,
+			score,
 			// clearStates
 		]
 	);

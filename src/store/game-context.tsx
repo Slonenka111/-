@@ -7,8 +7,9 @@ export interface IGameContext {
 	questionText: string;
 	questionVariants: IVariants[];
 	questionId: number;
-	gameMove: (index: number) => void;
+	gameMove: (index: number, secondsLeft: number) => void;
 	clearStates?: () => void;
+	score: number;
 }
 
 export const value: IGameContext = {
@@ -19,6 +20,7 @@ export const value: IGameContext = {
 	questionId: 0,
 	gameMove: () => {},
 	clearStates: () => {},
+	score: 0,
 };
 
 export const GameContext: React.Context<IGameContext> = React.createContext(value);
