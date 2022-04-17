@@ -1,7 +1,6 @@
-import React, { useCallback, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import logo from '../../assets/logo.png';
-import './start.css';
+import React, { useCallback, useContext } from "react";
+import logo from "../../assets/logo.png";
+import "./start.css";
 import { GameContext, WindowState } from "../../store/game-context";
 
 const StartWindow: React.FC = () => {
@@ -19,12 +18,10 @@ const StartWindow: React.FC = () => {
 };
 
 const StartGameButton: React.FC = (props) => {
-	const { toggleGameState } = useContext(GameContext);
-	const navigate = useNavigate();
+	const { switchWindow } = useContext(GameContext);
 	const handleClick = useCallback(() => {
-		navigate('/game');
-		toggleGameState(WindowState.game);
-	}, [navigate, toggleGameState]);
+		switchWindow(WindowState.game);
+	}, [switchWindow]);
 	return <button onClick={handleClick} {...props} />;
 };
 

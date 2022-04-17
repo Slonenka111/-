@@ -8,18 +8,19 @@ enum WindowState {
 }
 
 interface IGameContext {
-	toggleGameState: (state: WindowState) => void;
+	windowState: WindowState;
+	switchWindow: (state: WindowState) => void;
 	questionNumber: number;
 	questionText: string;
 	questionVariants: IVariants[];
 	questionId: number;
 	gameMove: (index: number) => void;
-	clearStates?: () => void;
+	clearStates: () => void;
 }
 
 const value: IGameContext = {
-	toggleGameState: () => {
-	},
+	windowState: WindowState.start,
+	switchWindow: () => {},
 	questionNumber: 0,
 	questionText: "",
 	questionVariants: [],

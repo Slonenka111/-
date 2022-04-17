@@ -1,25 +1,26 @@
-import React from 'react';
-import './App.css';
-import StartWindow from './route/start';
-import GameWindow from './route/game';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import PageLayout from './components/PageLayout/PageLayout';
-import GameContextWrapper from './components/context';
+import React from "react";
+import "./App.css";
+import StartWindow from "./route/start";
+import GameWindow from "./route/game";
+import { BrowserRouter as Router, Navigate, Route, Routes } from "react-router-dom";
+import PageLayout from "./components/PageLayout/PageLayout";
+import GameContextWrapper from "./components/context";
 import EndWindow from "./route/end";
 
 function App() {
 	return (
-		<GameContextWrapper>
-			<PageLayout>
-				<Router>
+		<PageLayout>
+			<Router>
+				<GameContextWrapper>
 					<Routes>
-						<Route path="*" element={<StartWindow />} />
+						<Route path="/" element={<StartWindow />} />
 						<Route path="/game" element={<GameWindow />} />
 						<Route path="/end" element={<EndWindow />} />
+						<Route path="*" element={<Navigate to={'/'} />} />
 					</Routes>
-				</Router>
-			</PageLayout>
-		</GameContextWrapper>
+				</GameContextWrapper>
+			</Router>
+		</PageLayout>
 	);
 }
 
