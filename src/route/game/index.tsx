@@ -15,21 +15,17 @@ const GameWindow: React.FC = () => {
 		setIsDisabled((prevState) => !prevState);
 	}, [setIsDisabled]);
 
-	const toggleTimerPause = useCallback(() => {
-		setPaused((prev) => !prev);
-	}, [setPaused]);
-
 	const { questionNumber, questionText, questionVariants, gameMove, toggleGameState, score } =
 		useContext(GameContext);
 
 	const handleClick = (index: number) => {
-		toggleTimerPause();
+		setPaused(true);
 
 		toggleIsDisabled();
 		setTimeout(() => {
 			toggleIsDisabled();
 			gameMove(index, secondsLeftAfterAnswer.current);
-			toggleTimerPause();
+			setPaused(false);
 		}, 1000);
 	};
 
