@@ -1,30 +1,45 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useRef, useState } from 'react';
 import '../../components/questions/style.css';
 import { GameContext } from '../../store/game-context';
 import Timer from '../../components/Timer/Timer';
 import LevelRoadmap from '../../components/LevelRoadmap/LevelRoadmap';
 
+const SECONDS_TO_ANSWER = 30;
+
 const GameWindow: React.FC = () => {
 	const [isDisabled, setIsDisabled] = useState(false);
+	const [isPaused, setPaused] = useState(false);
+	const secondsLeftAfterAnswer = useRef(SECONDS_TO_ANSWER);
 
 	const toggleIsDisabled = useCallback(() => {
 		setIsDisabled((prevState) => !prevState);
 	}, [setIsDisabled]);
 
-	const { questionNumber, questionText, questionVariants, gameMove } = useContext(GameContext);
+	const { questionNumber, questionText, questionVariants, gameMove, toggleGameState, score } =
+		useContext(GameContext);
 
 	const handleClick = (index: number) => {
+		setPaused(true);
+
 		toggleIsDisabled();
 		setTimeout(() => {
 			toggleIsDisabled();
-			gameMove(index);
+			gameMove(index, secondsLeftAfterAnswer.current);
+			setPaused(false);
 		}, 1000);
 	};
 
 	return (
 		<div>
+			<div>{score}</div>
 			<div className="game-controls">
-				<Timer paused={false} duration={30} onTimeExpiration={() => console.log('expired')} />
+				<Timer
+					key={questionNumber}
+					paused={isPaused}
+					duration={SECONDS_TO_ANSWER}
+					onTimeExpiration={toggleGameState}
+					onPause={(secondsLeft) => (secondsLeftAfterAnswer.current = secondsLeft)}
+				/>
 				<LevelRoadmap currentLevel={questionNumber + 1} safetyLevels={[5, 10, 15]} />
 			</div>
 			<div className="question">

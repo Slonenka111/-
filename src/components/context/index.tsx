@@ -31,6 +31,7 @@ const createGameStateString = (
 };
 
 const GameContextWrapper: React.FC = ({ children }) => {
+	const [windowState, setWindowState] = useState(false);
 	const [windowState, setWindowState] = useState(WindowState.start);
 	const [resultGame, setResultGame] = useState(ResultGame.default);
 	const [questionNumber, setQuestionNumber] = useState(0);
@@ -48,6 +49,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 		},
 		[navigate]
 	);
+	const [score, setScore] = useState(0);
 
 	// Логика для первой отрисовки
 	useEffect(() => {
@@ -94,7 +96,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 	}, [windowState, resultGame, questionNumber, difficult, questionId]);
 
 	const gameMove = useCallback(
-		(index: number) => {
+		(index: number, secondsLeft: number) => {
 			const isRight = checkAnswer(questionId, index);
 
 			// Обработка не верного ответа - проигрыша
@@ -105,6 +107,8 @@ const GameContextWrapper: React.FC = ({ children }) => {
 				return;
 			}
 
+			setScore((prev) => prev + 10 + secondsLeft);
+
 			// Обработка верного ответа на 15-й вопрос - победа
 			if (questionNumber === 14) {
 				console.log('WIN');
@@ -114,7 +118,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 			}
 
 			// Обработка следующего шага
-			setQuestionNumber(questionNumber + 1);
+			setQuestionNumber((prev) => prev + 1);
 			passQuestions.push(questionId);
 			setDifficult(
 				passQuestions.length < 4
@@ -147,6 +151,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 			questionVariants,
 			questionId,
 			gameMove,
+			score,
 			clearStates,
 		}),
 		[
@@ -158,6 +163,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 			questionVariants,
 			questionId,
 			gameMove,
+			score,
 			clearStates,
 		]
 	);
