@@ -31,7 +31,6 @@ const createGameStateString = (
 };
 
 const GameContextWrapper: React.FC = ({ children }) => {
-	const [windowState, setWindowState] = useState(false);
 	const [windowState, setWindowState] = useState(WindowState.start);
 	const [resultGame, setResultGame] = useState(ResultGame.default);
 	const [questionNumber, setQuestionNumber] = useState(0);
@@ -146,6 +145,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 			windowState,
 			resultGame,
 			switchWindow,
+			setResultGame,
 			questionNumber,
 			questionText,
 			questionVariants,
@@ -158,6 +158,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 			windowState,
 			resultGame,
 			switchWindow,
+			setResultGame,
 			questionNumber,
 			questionText,
 			questionVariants,

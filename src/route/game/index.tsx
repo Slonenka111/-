@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useRef, useState } from 'react';
 import '../../components/questions/style.css';
-import { GameContext } from '../../store/game-context';
+import { GameContext, ResultGame, WindowState } from '../../store/game-context';
 import Timer from '../../components/Timer/Timer';
 import LevelRoadmap from '../../components/LevelRoadmap/LevelRoadmap';
 
@@ -15,8 +15,15 @@ const GameWindow: React.FC = () => {
 		setIsDisabled((prevState) => !prevState);
 	}, [setIsDisabled]);
 
-	const { questionNumber, questionText, questionVariants, gameMove, toggleGameState, score } =
-		useContext(GameContext);
+	const {
+		questionNumber,
+		questionText,
+		questionVariants,
+		gameMove,
+		switchWindow,
+		setResultGame,
+		score,
+	} = useContext(GameContext);
 
 	const handleClick = (index: number) => {
 		setPaused(true);
@@ -29,6 +36,11 @@ const GameWindow: React.FC = () => {
 		}, 1000);
 	};
 
+	const handleTimeExpiration = useCallback(() => {
+		switchWindow(WindowState.end);
+		setResultGame(ResultGame.lose);
+	}, [switchWindow]);
+
 	return (
 		<div>
 			<div>{score}</div>
@@ -37,7 +49,7 @@ const GameWindow: React.FC = () => {
 					key={questionNumber}
 					paused={isPaused}
 					duration={SECONDS_TO_ANSWER}
-					onTimeExpiration={toggleGameState}
+					onTimeExpiration={handleTimeExpiration}
 					onPause={(secondsLeft) => (secondsLeftAfterAnswer.current = secondsLeft)}
 				/>
 				<LevelRoadmap currentLevel={questionNumber + 1} safetyLevels={[5, 10, 15]} />
