@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { QuestionDifficult } from "../../data/questions";
-import { GameContext, IGameContext, WindowState, ResultGame } from "../../store/game-context";
-import { checkAnswer, getQuestionById, getRandomQuestion } from "../questions";
-import { useNavigate } from "react-router-dom";
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { QuestionDifficult } from '../../data/questions';
+import { GameContext, IGameContext, WindowState, ResultGame } from '../../store/game-context';
+import { checkAnswer, getQuestionById, getRandomQuestion } from '../questions';
+import { useNavigate } from 'react-router-dom';
 
 let passQuestions: number[] = [];
 
@@ -12,14 +12,15 @@ const createGameStateString = (
 	questionNumber: number,
 	difficult: QuestionDifficult,
 	passQuestions: number[],
-	questionId: number): string => {
+	questionId: number
+): string => {
 	const gameState = {
 		windowState: windowState,
 		resultGame: resultGame,
 		questionNumber: questionNumber,
 		difficult: difficult,
 		passQuestions: passQuestions,
-		questionId: questionId
+		questionId: questionId,
 	};
 
 	return JSON.stringify(gameState);
@@ -31,23 +32,39 @@ const GameContextWrapper: React.FC = ({ children }) => {
 	const [questionNumber, setQuestionNumber] = useState(0);
 	const [difficult, setDifficult] = useState(QuestionDifficult.easy);
 	const [[questionText, questionVariants, questionId], setQuestion] = useState(() => {
-			return getRandomQuestion(difficult, passQuestions);
-		}
-	);
+		return getRandomQuestion(difficult, passQuestions);
+	});
 
 	const navigate = useNavigate();
 
-	const switchWindow = useCallback((targetWindow: WindowState) => {
-		setWindowState(targetWindow);
-		navigate(targetWindow);
-	}, [navigate]);
+	const switchWindow = useCallback(
+		(targetWindow: WindowState) => {
+			setWindowState(targetWindow);
+			navigate(targetWindow);
+		},
+		[navigate]
+	);
 
 	// Логика для первой отрисовки
 	useEffect(() => {
-		const gameState = JSON.parse(localStorage.getItem("GameState") as string);
+		let gameState;
+
+		try {
+			gameState = JSON.parse(localStorage.getItem('GameState') as string);
+		} catch (e) {
+			console.error(e);
+		}
+
 		if (!gameState) {
-			const newGameState = createGameStateString(windowState, resultGame, questionNumber, difficult, passQuestions, questionId);
-			localStorage.setItem("GameState", newGameState);
+			const newGameState = createGameStateString(
+				windowState,
+				resultGame,
+				questionNumber,
+				difficult,
+				passQuestions,
+				questionId
+			);
+			localStorage.setItem('GameState', newGameState);
 			switchWindow(WindowState.start);
 		} else {
 			switchWindow(gameState.windowState);
@@ -61,11 +78,15 @@ const GameContextWrapper: React.FC = ({ children }) => {
 
 	// Логика для игры
 	useEffect(() => {
-		const gameState = JSON.parse(localStorage.getItem("GameState") as string);
-		if (gameState) {
-			const newGameState = createGameStateString(windowState, resultGame, questionNumber, difficult, passQuestions, questionId);
-			localStorage.setItem("GameState", newGameState);
-		}
+		const newGameState = createGameStateString(
+			windowState,
+			resultGame,
+			questionNumber,
+			difficult,
+			passQuestions,
+			questionId
+		);
+		localStorage.setItem('GameState', newGameState);
 	}, [windowState, resultGame, questionNumber, difficult, questionId]);
 
 	const gameMove = useCallback(
@@ -74,7 +95,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 
 			// Обработка не верного ответа - проигрыша
 			if (!isRight) {
-				console.log("LOSE");
+				console.log('LOSE');
 				switchWindow(WindowState.end);
 				setResultGame(ResultGame.lose);
 				return;
@@ -82,7 +103,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 
 			// Обработка верного ответа на 15-й вопрос - победа
 			if (questionNumber === 14) {
-				console.log("WIN");
+				console.log('WIN');
 				switchWindow(WindowState.end);
 				setResultGame(ResultGame.win);
 				return;
@@ -95,8 +116,8 @@ const GameContextWrapper: React.FC = ({ children }) => {
 				passQuestions.length < 4
 					? QuestionDifficult.easy
 					: passQuestions.length < 9
-						? QuestionDifficult.medium
-						: QuestionDifficult.hard
+					? QuestionDifficult.medium
+					: QuestionDifficult.hard
 			);
 			setQuestion(getRandomQuestion(difficult, passQuestions));
 		},
@@ -122,7 +143,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 			questionVariants,
 			questionId,
 			gameMove,
-			clearStates
+			clearStates,
 		}),
 		[
 			windowState,
@@ -133,14 +154,11 @@ const GameContextWrapper: React.FC = ({ children }) => {
 			questionVariants,
 			questionId,
 			gameMove,
-			clearStates
+			clearStates,
 		]
 	);
 
 	return <GameContext.Provider value={value}>{children}</GameContext.Provider>;
 };
 
-export {
-	GameContextWrapper,
-	ResultGame
-};
+export { GameContextWrapper, ResultGame };

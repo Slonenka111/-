@@ -1,8 +1,8 @@
-import React, { useCallback, useContext, useState } from "react";
-import "../../components/questions/style.css";
-import { GameContext } from "../../store/game-context";
-import Timer from "../../components/Timer/Timer";
-import LevelRoadmap from "../../components/LevelRoadmap/LevelRoadmap";
+import React, { useCallback, useContext, useState } from 'react';
+import '../../components/questions/style.css';
+import { GameContext } from '../../store/game-context';
+import Timer from '../../components/Timer/Timer';
+import LevelRoadmap from '../../components/LevelRoadmap/LevelRoadmap';
 
 const GameWindow: React.FC = () => {
 	const [isDisabled, setIsDisabled] = useState(false);
