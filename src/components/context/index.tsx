@@ -13,7 +13,7 @@ const createGameStateString = (
 	difficult: QuestionDifficult,
 	passQuestions: number[],
 	questionId: number
-): string => {
+): string | undefined => {
 	const gameState = {
 		windowState: windowState,
 		resultGame: resultGame,
@@ -23,7 +23,11 @@ const createGameStateString = (
 		questionId: questionId,
 	};
 
-	return JSON.stringify(gameState);
+	try {
+		return JSON.stringify(gameState);
+	} catch (e) {
+		console.error(e);
+	}
 };
 
 const GameContextWrapper: React.FC = ({ children }) => {
@@ -64,7 +68,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 				passQuestions,
 				questionId
 			);
-			localStorage.setItem('GameState', newGameState);
+			if (newGameState) localStorage.setItem('GameState', newGameState);
 			switchWindow(WindowState.start);
 		} else {
 			switchWindow(gameState.windowState);
@@ -86,7 +90,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 			passQuestions,
 			questionId
 		);
-		localStorage.setItem('GameState', newGameState);
+		if (newGameState) localStorage.setItem('GameState', newGameState);
 	}, [windowState, resultGame, questionNumber, difficult, questionId]);
 
 	const gameMove = useCallback(
