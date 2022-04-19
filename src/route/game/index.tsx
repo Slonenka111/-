@@ -1,8 +1,9 @@
-import React, { useCallback, useContext, useRef, useState } from 'react';
-import '../../components/questions/style.scss';
-import { GameContext, ResultGame, WindowState } from '../../store/game-context';
-import Timer from '../../components/Timer/Timer';
-import LevelRoadmap from '../../components/LevelRoadmap/LevelRoadmap';
+import React, { useCallback, useContext, useRef, useState } from "react";
+import "../../components/questions/style.scss";
+import { GameContext, ResultGame, WindowState } from "../../store/game-context";
+import Timer from "../../components/Timer/Timer";
+import LevelRoadmap from "../../components/LevelRoadmap/LevelRoadmap";
+import "./style.scss";
 
 const SECONDS_TO_ANSWER = 30;
 
@@ -22,7 +23,7 @@ const GameWindow: React.FC = () => {
 		gameMove,
 		switchWindow,
 		setResultGame,
-		score,
+		score
 	} = useContext(GameContext);
 
 	const handleClick = (index: number) => {
@@ -42,17 +43,28 @@ const GameWindow: React.FC = () => {
 	}, [switchWindow]);
 
 	return (
-		<div>
-			<div>{score}</div>
-			<div className="game-controls">
-				<Timer
-					key={questionNumber}
-					paused={isPaused}
-					duration={SECONDS_TO_ANSWER}
-					onTimeExpiration={handleTimeExpiration}
-					onPause={(secondsLeft) => (secondsLeftAfterAnswer.current = secondsLeft)}
-				/>
-				<LevelRoadmap currentLevel={questionNumber + 1} safetyLevels={[5, 10, 15]} />
+		<div className="game-window">
+			<div className="game-window__header">
+				<div className="game-window__header--side">
+					<div>Тут подсказки   Тут подсказки   Тут подсказки  Тут подсказки</div>
+				</div>
+				<div className="game-window__header--middle">
+					<span className='game-window__text--score'> Счёт
+						<br/>
+						<span className="game-window__text--primary"> {score}</span>
+					</span>
+
+					<Timer
+						key={questionNumber}
+						paused={isPaused}
+						duration={SECONDS_TO_ANSWER}
+						onTimeExpiration={handleTimeExpiration}
+						onPause={(secondsLeft) => (secondsLeftAfterAnswer.current = secondsLeft)}
+					/>
+				</div>
+				<div className="game-window__header--side">
+					<LevelRoadmap currentLevel={questionNumber + 1} safetyLevels={[5, 10, 15]} />
+				</div>
 			</div>
 			<div className="question">
 				<div className="question__container--title">

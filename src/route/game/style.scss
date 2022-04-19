@@ -1,0 +1,63 @@
+.game-window {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	gap: 32px;
+	max-width: 1200px;
+	padding: 32px 16px;
+
+	&__header {
+		width: 100%;
+		display: flex;
+		justify-content: space-evenly;
+
+		&--side {
+			width: 100%;
+			max-width: 250px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+		&--middle {
+			display: flex;
+			flex-direction: column;
+			justify-content: space-evenly;
+		}
+
+		@media (max-width: 768px) {
+			flex-wrap: wrap;
+			gap: 16px;
+
+			&--side:nth-child(2) {
+				order: 1;
+			}
+			&--side:nth-child(1) {
+				order: 2;
+				max-width: 100%;
+			}
+			&--middle {
+				order: 3;
+				gap: 8px;
+			}
+
+		}
+
+
+	}
+
+	&__text{
+
+		&--score {
+			font-size: 24px;
+			line-height: 32px;
+			font-weight: bold;
+		}
+
+		&--primary {
+			color: #e3a335;
+		}
+
+	}
+}

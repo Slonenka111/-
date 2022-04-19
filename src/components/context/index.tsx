@@ -44,7 +44,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 	const switchWindow = useCallback(
 		(targetWindow: WindowState) => {
 			setWindowState(targetWindow);
-			navigate(targetWindow);
+			// navigate(targetWindow);
 		},
 		[navigate]
 	);
