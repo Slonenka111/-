@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useRef, useState } from 'react';
-import '../../components/questions/style.css';
+import '../../components/questions/style.scss';
 import { GameContext, ResultGame, WindowState } from '../../store/game-context';
 import Timer from '../../components/Timer/Timer';
 import LevelRoadmap from '../../components/LevelRoadmap/LevelRoadmap';

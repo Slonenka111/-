@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.css';
+import './App.scss';
 import StartWindow from './route/start';
 import GameWindow from './route/game';
 import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom';

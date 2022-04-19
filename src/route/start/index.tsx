@@ -1,6 +1,6 @@
 import React, { useCallback, useContext } from 'react';
-import logo from '../../assets/logo.png';
-import './start.css';
+import logo from '../../assets/images/logo.png';
+import './start.scss';
 import { GameContext, WindowState } from '../../store/game-context';
 
 const StartWindow: React.FC = () => {

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import './Timer.css';
+import './Timer.scss';
 
 interface Props {
 	paused: boolean;

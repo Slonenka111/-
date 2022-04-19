@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import './LevelRoadmap.css';
+import './LevelRoadmap.scss';
 import classNames from 'classnames';
 
 type Level = {
