@@ -17,6 +17,7 @@ interface IGameContext {
 	windowState: WindowState;
 	resultGame: string;
 	switchWindow: (state: WindowState) => void;
+	setResultGame: (resultGame: ResultGame) => void;
 	questionNumber: number;
 	questionText: string;
 	questionVariants: IVariants[];
@@ -30,6 +31,7 @@ const value: IGameContext = {
 	windowState: WindowState.start,
 	resultGame: ResultGame.default,
 	switchWindow: () => {},
+	setResultGame: () => {},
 	questionNumber: 0,
 	questionText: '',
 	questionVariants: [],
