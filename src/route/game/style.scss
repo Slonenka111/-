@@ -1,12 +1,4 @@
 .game-window {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	flex-direction: column;
-	gap: 32px;
-	max-width: 1200px;
-	padding: 32px 16px;
-
 	&__header {
 		width: 100%;
 		display: flex;
@@ -24,6 +16,7 @@
 			display: flex;
 			flex-direction: column;
 			justify-content: space-evenly;
+			gap: 16px;
 		}
 
 		@media (max-width: 768px) {
@@ -41,23 +34,6 @@
 				order: 3;
 				gap: 8px;
 			}
-
 		}
-
-
-	}
-
-	&__text{
-
-		&--score {
-			font-size: 24px;
-			line-height: 32px;
-			font-weight: bold;
-		}
-
-		&--primary {
-			color: #e3a335;
-		}
-
 	}
 }

@@ -1,11 +1,16 @@
 .timer {
-	width: 150px;
-	height: 150px;
+	--deg: -1;
+	--col: hsla(0, 100%, 50%, 1);
+	width: 120px;
+	height: 120px;
 	border-radius: 50%;
-	border: 10px solid #e3a335;
-	font-size: 30px;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	background-color: #1d0c1e;
+	text-align: center;
+	font: bold 36px/120px monospace;
+	background-image: radial-gradient(#2b1529 49px, #f000 51px),
+		conic-gradient(
+			var(--col) calc(var(--deg) * 1deg - 1deg),
+			transparent calc(var(--deg) * 1deg + 1deg)
+		),
+		radial-gradient(#fff3 40px, #4441 60px);
+	box-shadow: inset 0 0 10px -5px #000a;
 }

@@ -1,11 +1,12 @@
 import React from 'react';
 import './App.scss';
+import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom';
+import { GameContextWrapper } from './components/context';
+import PageLayout from './components/PageLayout/PageLayout';
 import StartWindow from './route/start';
 import GameWindow from './route/game';
-import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom';
-import PageLayout from './components/PageLayout/PageLayout';
-import { GameContextWrapper } from './components/context';
 import EndWindow from './route/end';
+import './components/button/style.scss';
 
 function App() {
 	return (
