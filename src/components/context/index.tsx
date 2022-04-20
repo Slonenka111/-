@@ -137,7 +137,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 	);
 
 	const clearStates = useCallback(() => {
-		switchWindow(WindowState.start);
+		switchWindow(WindowState.game);
 		setResultGame(ResultGame.default);
 		setQuestionNumber(0);
 		passQuestions = [];
