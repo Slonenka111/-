@@ -1,16 +1,27 @@
 .timer {
 	--deg: -1;
 	--col: hsla(0, 100%, 50%, 1);
-	width: 120px;
-	height: 120px;
+	width: 150px;
+	height: 150px;
 	border-radius: 50%;
 	text-align: center;
-	font: bold 36px/120px monospace;
-	background-image: radial-gradient(#2b1529 49px, #f000 51px),
+	font: 36px/150px 'Montserrat', sans-serif;
+	background-image: radial-gradient(#2b1529 70px, #f000 71px),
 		conic-gradient(
 			var(--col) calc(var(--deg) * 1deg - 1deg),
 			transparent calc(var(--deg) * 1deg + 1deg)
 		),
-		radial-gradient(#fff3 40px, #4441 60px);
-	box-shadow: inset 0 0 10px -5px #000a;
+		radial-gradient(#fff0 40px, #4441 60px);
+
+	@media (max-width: 768px) {
+		width: 95px;
+		height: 95px;
+		font: 30px/95px 'Montserrat', sans-serif;
+		background-image: radial-gradient(#2b1529 43px, #f000 44px),
+			conic-gradient(
+				var(--col) calc(var(--deg) * 1deg - 1deg),
+				transparent calc(var(--deg) * 1deg + 1deg)
+			),
+			radial-gradient(#fff3 40px, #4441 60px);
+	}
 }

@@ -4,6 +4,10 @@
 	flex-wrap: wrap;
 	gap: 32px;
 
+	@media (max-width: 768px) {
+		gap: 16px;
+	}
+
 	&__container {
 		position: relative;
 		width: 100%;
@@ -60,7 +64,7 @@
 		clip-path: polygon(20% 0%, 80% 0%, 99% 50%, 99% 50%, 80% 100%, 20% 100%, 1% 50%, 1% 50%);
 
 		@media (max-width: 768px) {
-			font-size: 20px;
+			font-size: 18px;
 			padding: 20px 35px;
 		}
 	}

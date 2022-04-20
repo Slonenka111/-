@@ -1,3 +1,21 @@
+$levelsTransition: (
+	'0': '-214',
+	'1': '-214',
+	'2': '-190',
+	'3': '-166',
+	'4': '-144',
+	'5': '-124',
+	'6': '-102',
+	'7': '-80',
+	'8': '-58',
+	'9': '-36',
+	'10': '-14',
+	'11': '-14',
+	'12': '-14',
+	'13': '-14',
+	'14': '-14',
+);
+
 .level-list {
 	width: 100%;
 	height: 150px;
@@ -13,60 +31,10 @@
 	border-radius: 20px;
 	transition: 0.3s;
 
-	&[data-state='0'] .level-item,
-	&[data-state='1'] .level-item {
-		transform: translateY(-240px);
-	}
-
-	&[data-state='2'] .level-item {
-		transform: translateY(-216px);
-	}
-
-	&[data-state='3'] .level-item {
-		transform: translateY(-192px);
-	}
-
-	&[data-state='4'] .level-item {
-		transform: translateY(-180px);
-	}
-
-	&[data-state='5'] .level-item {
-		transform: translateY(-168px);
-	}
-
-	//&[data-state='6'] .level-item,
-	//&[data-state='7'] .level-item,
-	//&[data-state='8'] .level-item
-	//{
-	//	transform: translateY(-144px);
-	//}
-
-	&[data-state='6'] .level-item {
-		transform: translateY(-144px);
-	}
-
-	&[data-state='7'] .level-item {
-		transform: translateY(-120px);
-	}
-
-	&[data-state='8'] .level-item {
-		transform: translateY(-96px);
-	}
-
-	&[data-state='9'] .level-item {
-		transform: translateY(-72px);
-	}
-
-	&[data-state='10'] .level-item {
-		transform: translateY(-48px);
-	}
-
-	&[data-state='10'] .level-item {
-		transform: translateY(-24px);
-	}
-
-	&[data-state='11'] .level-item {
-		transform: translateY(0px);
+	@each $idx, $size in $levelsTransition {
+		&[data-state='#{$idx}'] .level-item {
+			transform: translateY(#{$size}px);
+		}
 	}
 }
 
