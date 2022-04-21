@@ -80,7 +80,7 @@ const GameWindow: React.FC = () => {
 					(variant) =>
 						(variant.id === firstVariantId || variant.id === secondVariantId) && (
 							<div
-								className='button__wrapper'
+								className={classNames('button__wrapper', { disabled: isDisabled })}
 								key={variant.id}
 							>
 								<button
