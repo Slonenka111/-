@@ -23,11 +23,12 @@
 			flex-wrap: wrap;
 			gap: 16px;
 
-			&--side:nth-child(2) {
-				order: 1;
-			}
-			&--side:nth-child(1) {
+			&--side {
 				order: 2;
+				max-width: 100%;
+			}
+			&--side:last-child {
+				order: 1;
 				max-width: 100%;
 			}
 			&--middle {

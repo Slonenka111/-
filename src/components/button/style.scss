@@ -70,10 +70,11 @@
 
 				.button__wrapper {
 					max-width: 500px;
-					height: 60px;
+					min-height: 50px;
+					height: auto;
 				}
 				.button__item {
-					font-size: 18px;
+					font-size: 16px;
 				}
 			}
 		}
