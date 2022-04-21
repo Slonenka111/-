@@ -1,16 +1,29 @@
 import React, { useCallback, useContext } from 'react';
-import logo from '../../assets/logo.png';
-import './start.css';
+import logo from '../../assets/images/logo.png';
+import logoOptimize from '../../assets/images/logo_optimize.png';
+import './start.scss';
 import { GameContext, WindowState } from '../../store/game-context';
 
 const StartWindow: React.FC = () => {
 	return (
-		<div>
-			<h1>Кто хочет стать миллионером?</h1>
-			<div className="rowContainer">
-				<img alt="game logo" width={251} src={logo} />
+		<div className="start-window container">
+			<div className="start-window__img">
+				<div className="start-window__img-wrapper">
+					<div className="start-window__img-line" />
+					<div className="start-window__img-line" />
+					<div className="start-window__img-line" />
+					<div className="start-window__img-line" />
+					<div className="start-window__img-line" />
+					<div className="start-window__img-line" />
+				</div>
+				<img
+					className="start-window__img-logo"
+					alt="millioner project logo"
+					srcSet={`${logoOptimize}, ${logo} 2x`}
+					src={logo}
+				/>
 			</div>
-			<div className="rowContainer">
+			<div className="start-window__btn">
 				<StartGameButton>Начать игру</StartGameButton>
 			</div>
 		</div>
@@ -22,7 +35,15 @@ const StartGameButton: React.FC = (props) => {
 	const handleClick = useCallback(() => {
 		switchWindow(WindowState.game);
 	}, [switchWindow]);
-	return <button onClick={handleClick} {...props} />;
+	return (
+		<div className="button__container">
+			<div className="button__container-item">
+				<div className="button__wrapper">
+					<button className="button__item button__item--bold" onClick={handleClick} {...props} />
+				</div>
+			</div>
+		</div>
+	);
 };
 
 export default StartWindow;

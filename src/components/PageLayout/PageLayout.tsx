@@ -1,5 +1,5 @@
 import React from 'react';
-import './PageLayout.css';
+import './PageLayout.scss';
 
 const PageLayout: React.FC = ({ children }) => {
 	return <main className="main">{children}</main>;

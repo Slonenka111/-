@@ -12,7 +12,8 @@ const createGameStateString = (
 	questionNumber: number,
 	difficult: QuestionDifficult,
 	passQuestions: number[],
-	questionId: number
+	questionId: number,
+	score: number
 ): string | undefined => {
 	const gameState = {
 		windowState: windowState,
@@ -21,6 +22,7 @@ const createGameStateString = (
 		difficult: difficult,
 		passQuestions: passQuestions,
 		questionId: questionId,
+		score: score,
 	};
 
 	try {
@@ -38,6 +40,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 	const [[questionText, questionVariants, questionId], setQuestion] = useState(() => {
 		return getRandomQuestion(difficult, passQuestions);
 	});
+	const [score, setScore] = useState(0);
 
 	const navigate = useNavigate();
 
@@ -48,7 +51,6 @@ const GameContextWrapper: React.FC = ({ children }) => {
 		},
 		[navigate]
 	);
-	const [score, setScore] = useState(0);
 
 	// Логика для первой отрисовки
 	useEffect(() => {
@@ -67,7 +69,8 @@ const GameContextWrapper: React.FC = ({ children }) => {
 				questionNumber,
 				difficult,
 				passQuestions,
-				questionId
+				questionId,
+				score
 			);
 			if (newGameState) localStorage.setItem('GameState', newGameState);
 			switchWindow(WindowState.start);
@@ -78,6 +81,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 			setDifficult(gameState.difficult);
 			passQuestions = gameState.passQuestions;
 			setQuestion(getQuestionById(gameState.questionId));
+			setScore(gameState.score);
 		}
 	}, []);
 
@@ -89,10 +93,11 @@ const GameContextWrapper: React.FC = ({ children }) => {
 			questionNumber,
 			difficult,
 			passQuestions,
-			questionId
+			questionId,
+			score
 		);
 		if (newGameState) localStorage.setItem('GameState', newGameState);
-	}, [windowState, resultGame, questionNumber, difficult, questionId]);
+	}, [windowState, resultGame, questionNumber, difficult, questionId, score]);
 
 	const gameMove = useCallback(
 		(index: number, secondsLeft: number) => {
@@ -132,12 +137,13 @@ const GameContextWrapper: React.FC = ({ children }) => {
 	);
 
 	const clearStates = useCallback(() => {
-		switchWindow(WindowState.start);
+		switchWindow(WindowState.game);
 		setResultGame(ResultGame.default);
 		setQuestionNumber(0);
 		passQuestions = [];
 		setDifficult(QuestionDifficult.easy);
 		setQuestion(getRandomQuestion(QuestionDifficult.easy, passQuestions));
+		setScore(0);
 	}, [switchWindow]);
 
 	const value = useMemo<IGameContext>(
