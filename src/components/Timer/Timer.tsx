@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import './Timer.css';
+import React, { CSSProperties, useCallback, useEffect, useRef, useState } from 'react';
+import './Timer.scss';
 
 interface Props {
 	paused: boolean;
@@ -8,6 +8,12 @@ interface Props {
 	onTimeExpiration(): void;
 
 	onPause(secondsLeft: number): void;
+}
+
+declare module 'react' {
+	interface CSSProperties {
+		[key: `--${string}`]: string | number;
+	}
 }
 
 const Timer: React.FC<Props> = (timerProps) => {
@@ -30,7 +36,16 @@ const Timer: React.FC<Props> = (timerProps) => {
 		return () => clearInterval(timer);
 	}, [seconds, onTimeExpiration, clearInterval, paused, onPause]);
 
-	return <div className="timer">{seconds}</div>;
+	const timerStyle: CSSProperties = {
+		'--deg': `${360 - (360 / duration) * seconds} `,
+		'--col': `hsla(${(100 / duration) * seconds}, 100%, ${50 - duration / seconds}%, 1)`,
+	};
+
+	return (
+		<div className="timer" style={timerStyle}>
+			{seconds}
+		</div>
+	);
 };
 
 export default Timer;

@@ -1,0 +1,40 @@
+.game-window {
+	&__header {
+		width: 100%;
+		display: flex;
+		justify-content: space-evenly;
+
+		&--side {
+			width: 100%;
+			max-width: 250px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+		&--middle {
+			display: flex;
+			flex-direction: column;
+			justify-content: space-evenly;
+			gap: 16px;
+		}
+
+		@media (max-width: 768px) {
+			flex-wrap: wrap;
+			gap: 16px;
+
+			&--side {
+				order: 2;
+				max-width: 100%;
+			}
+			&--side:last-child {
+				order: 1;
+				max-width: 100%;
+			}
+			&--middle {
+				order: 3;
+				gap: 8px;
+			}
+		}
+	}
+}

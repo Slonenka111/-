@@ -1,6 +1,7 @@
-import React, { useMemo } from 'react';
-import './LevelRoadmap.css';
+import React, { useContext, useMemo } from 'react';
+import './LevelRoadmap.scss';
 import classNames from 'classnames';
+import { GameContext } from '../../store/game-context';
 
 type Level = {
 	id: number;
@@ -35,8 +36,10 @@ interface LevelRoadmapProps {
 const LevelRoadmap: React.FC<LevelRoadmapProps> = (props) => {
 	const { currentLevel, safetyLevels } = props;
 
+	const { questionNumber } = useContext(GameContext);
+
 	return (
-		<ul className="level-list">
+		<ul className="level-list" data-state={questionNumber}>
 			{reversedLevels.map((level) => (
 				<li
 					className={classNames('level-item', {
@@ -59,4 +62,4 @@ const LevelRoadmap: React.FC<LevelRoadmapProps> = (props) => {
 	);
 };
 
-export default LevelRoadmap;
+export { LevelRoadmap, levels };
