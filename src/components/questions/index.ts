@@ -1,4 +1,4 @@
-import { getQuestions, QuestionDifficult, IVariants } from '../../data/questions';
+import {getQuestions, QuestionDifficult, IVariants, TAnswerNumbers} from '../../data/questions';
 
 type TgetQuestion = [questionText: string, questionVariants: IVariants[], questionId: number];
 
@@ -26,10 +26,10 @@ const getQuestionById = (id: number): TgetQuestion => {
 	return [question.text, question.variants, question.id];
 };
 
-const checkAnswer = (id: number, index: number): boolean => {
+const getRightAnswer = (id: number): TAnswerNumbers => {
 	const question = questions.filter((question) => question.id === id)[0];
-	return index === question?.rightAnswer;
+	return question?.rightAnswer;
 };
 
-export { getRandomQuestion, getQuestionById, checkAnswer };
+export { getRandomQuestion, getQuestionById, getRightAnswer };
 export type { TgetQuestion };

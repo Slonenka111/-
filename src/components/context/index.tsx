@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { QuestionDifficult } from '../../data/questions';
 import { GameContext, IGameContext, WindowState, ResultGame } from '../../store/game-context';
-import { checkAnswer, getQuestionById, getRandomQuestion } from '../questions';
+import { getQuestionById, getRandomQuestion } from '../questions';
 import { useNavigate } from 'react-router-dom';
 
 let passQuestions: number[] = [];
@@ -95,11 +95,9 @@ const GameContextWrapper: React.FC = ({ children }) => {
 	}, [windowState, resultGame, questionNumber, difficult, questionId]);
 
 	const gameMove = useCallback(
-		(index: number, secondsLeft: number) => {
-			const isRight = checkAnswer(questionId, index);
-
+		(isAnswerRight, secondsLeft) => {
 			// Обработка не верного ответа - проигрыша
-			if (!isRight) {
+			if (!isAnswerRight) {
 				console.log('LOSE');
 				switchWindow(WindowState.end);
 				setResultGame(ResultGame.lose);
@@ -138,6 +136,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 		passQuestions = [];
 		setDifficult(QuestionDifficult.easy);
 		setQuestion(getRandomQuestion(QuestionDifficult.easy, passQuestions));
+		setScore(0);
 	}, [switchWindow]);
 
 	const value = useMemo<IGameContext>(

@@ -1,19 +1,25 @@
-import React, { useCallback, useContext, useRef, useState } from 'react';
+import React, {useCallback, useContext, useEffect, useRef, useState} from 'react';
 import '../../components/questions/style.css';
-import { GameContext, ResultGame, WindowState } from '../../store/game-context';
+import {GameContext, ResultGame, WindowState} from '../../store/game-context';
 import Timer from '../../components/Timer/Timer';
 import LevelRoadmap from '../../components/LevelRoadmap/LevelRoadmap';
+import {getRightAnswer} from "../../components/questions";
 
 const SECONDS_TO_ANSWER = 30;
+
+enum AnswerStatuses {
+	Pending = "pending",
+	Wrong = "wrong",
+	Correct = "correct",
+}
 
 const GameWindow: React.FC = () => {
 	const [isDisabled, setIsDisabled] = useState(false);
 	const [isPaused, setPaused] = useState(false);
+	const [answer, setAnswer] = useState<undefined | number>(undefined);
+	const [answerStatus, setAnswerStatus] = useState(AnswerStatuses.Pending);
+	const rightAnswer = useRef<undefined | number>(undefined);
 	const secondsLeftAfterAnswer = useRef(SECONDS_TO_ANSWER);
-
-	const toggleIsDisabled = useCallback(() => {
-		setIsDisabled((prevState) => !prevState);
-	}, [setIsDisabled]);
 
 	const {
 		questionNumber,
@@ -23,17 +29,41 @@ const GameWindow: React.FC = () => {
 		switchWindow,
 		setResultGame,
 		score,
+		questionId,
 	} = useContext(GameContext);
+
+	useEffect(() => {
+		rightAnswer.current = getRightAnswer(questionId);
+		return () => {
+			setAnswer(undefined)
+			rightAnswer.current = undefined;
+			setIsDisabled(false);
+			setPaused(false);
+		}
+	}, [questionId])
+
+	const getAnswerButtonClassName = (index: number) : string => {
+		if (answer && index === answer)
+				return answerStatus;
+		if (answerStatus === AnswerStatuses.Wrong && index === rightAnswer.current)
+				return AnswerStatuses.Correct;
+		return "";
+
+	}
 
 	const handleClick = (index: number) => {
 		setPaused(true);
-
-		toggleIsDisabled();
+		setIsDisabled(true);
+		setAnswer(index);
+		setAnswerStatus(AnswerStatuses.Pending)
 		setTimeout(() => {
-			toggleIsDisabled();
-			gameMove(index, secondsLeftAfterAnswer.current);
-			setPaused(false);
-		}, 1000);
+			index === rightAnswer.current
+				? setAnswerStatus(AnswerStatuses.Correct)
+				: setAnswerStatus(AnswerStatuses.Wrong);
+			setTimeout( () => {
+				gameMove(rightAnswer.current === index, secondsLeftAfterAnswer.current);
+			}, 3000)
+		}, 3000);
 	};
 
 	const handleTimeExpiration = useCallback(() => {
@@ -52,7 +82,7 @@ const GameWindow: React.FC = () => {
 					onTimeExpiration={handleTimeExpiration}
 					onPause={(secondsLeft) => (secondsLeftAfterAnswer.current = secondsLeft)}
 				/>
-				<LevelRoadmap currentLevel={questionNumber + 1} safetyLevels={[5, 10, 15]} />
+				<LevelRoadmap currentLevel={questionNumber + 1} safetyLevels={[5, 10, 15]}/>
 			</div>
 			<div className="question">
 				<div className="question__container--title">
@@ -68,6 +98,7 @@ const GameWindow: React.FC = () => {
 									className="question__answer-btn"
 									disabled={isDisabled}
 									onClick={() => handleClick(variant.id)}
+									data-button={getAnswerButtonClassName(variant.id)}
 								>
 									{variant.text}
 								</button>

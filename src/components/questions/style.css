@@ -120,10 +120,23 @@
 	transition: 0.3s;
 }
 
-.question__item:hover .question__answer-btn {
+.question__item:hover .question__answer-btn:not([disabled]) {
 	background: #760376;
 }
 
 button:disabled {
-	background-color: aquamarine;
+	opacity: 0.9;
+	cursor: auto;
+}
+
+button[data-button="pending"] {
+	background: #e3a335;
+}
+
+button[data-button="correct"] {
+	background: green;
+}
+
+button[data-button="wrong"] {
+	background: red;
 }
