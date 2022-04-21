@@ -1,4 +1,4 @@
-import {getQuestions, QuestionDifficult, IVariants, TAnswerNumbers} from '../../data/questions';
+import { getQuestions, QuestionDifficult, IVariants, TAnswerNumbers } from '../../data/questions';
 
 type TgetQuestion = [questionText: string, questionVariants: IVariants[], questionId: number];
 

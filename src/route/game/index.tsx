@@ -1,17 +1,18 @@
-import React, {useCallback, useContext, useEffect, useRef, useState} from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import '../../components/questions/style.scss';
-import {GameContext, ResultGame, WindowState} from '../../store/game-context';
+import { GameContext, ResultGame, WindowState } from '../../store/game-context';
 import Timer from '../../components/Timer/Timer';
 import { LevelRoadmap } from '../../components/LevelRoadmap/LevelRoadmap';
 import './style.scss';
-import {getRightAnswer} from "../../components/questions";
+import { getRightAnswer } from '../../components/questions';
+import classNames from 'classnames';
 
 const SECONDS_TO_ANSWER = 30;
 
 enum AnswerStatuses {
-	Pending = "pending",
-	Wrong = "wrong",
-	Correct = "correct",
+	Pending = 'pending',
+	Wrong = 'wrong',
+	Correct = 'correct',
 }
 
 const GameWindow: React.FC = () => {
@@ -29,41 +30,38 @@ const GameWindow: React.FC = () => {
 		gameMove,
 		switchWindow,
 		setResultGame,
-		score,
 		questionId,
 	} = useContext(GameContext);
 
 	useEffect(() => {
 		rightAnswer.current = getRightAnswer(questionId);
 		return () => {
-			setAnswer(undefined)
+			setAnswer(undefined);
 			rightAnswer.current = undefined;
 			setIsDisabled(false);
 			setPaused(false);
-		}
-	}, [questionId])
+		};
+	}, [questionId]);
 
-	const getAnswerButtonClassName = (index: number) : string => {
-		if (answer && index === answer)
-				return answerStatus;
+	const getAnswerButtonClassName = (index: number): string => {
+		if (answer && index === answer) return answerStatus;
 		if (answerStatus === AnswerStatuses.Wrong && index === rightAnswer.current)
-				return AnswerStatuses.Correct;
-		return "";
-
-	}
+			return AnswerStatuses.Correct;
+		return '';
+	};
 
 	const handleClick = (index: number) => {
 		setPaused(true);
 		setIsDisabled(true);
 		setAnswer(index);
-		setAnswerStatus(AnswerStatuses.Pending)
+		setAnswerStatus(AnswerStatuses.Pending);
 		setTimeout(() => {
 			index === rightAnswer.current
 				? setAnswerStatus(AnswerStatuses.Correct)
 				: setAnswerStatus(AnswerStatuses.Wrong);
-			setTimeout( () => {
+			setTimeout(() => {
 				gameMove(rightAnswer.current === index, secondsLeftAfterAnswer.current);
-			}, 3000)
+			}, 3000);
 		}, 3000);
 	};
 
@@ -71,6 +69,38 @@ const GameWindow: React.FC = () => {
 		switchWindow(WindowState.end);
 		setResultGame(ResultGame.lose);
 	}, [setResultGame, switchWindow]);
+
+	const ButtonsContainer: React.FC<{ containerNumber: 1 | 2 }> = ({ containerNumber }) => {
+		const firstVariantId = containerNumber * 2 - 1;
+		const secondVariantId = containerNumber * 2;
+		const variantsLabels = ['A', 'B', 'C', 'D'];
+		return (
+			<div className="button__container-item">
+				{questionVariants.map(
+					(variant) =>
+						(variant.id === firstVariantId || variant.id === secondVariantId) && (
+							<div
+								className='button__wrapper'
+								key={variant.id}
+							>
+								<button
+									className={classNames(
+										'button__item',
+										'question__btn',
+										getAnswerButtonClassName(variant.id)
+									)}
+									disabled={isDisabled}
+									onClick={() => handleClick(variant.id)}
+								>
+									<span className="text--primary">{`${variantsLabels[variant.id - 1]}: `}</span>
+									{variant.text}
+								</button>
+							</div>
+						)
+				)}
+			</div>
+		);
+	};
 
 	return (
 		<div className="game-window container">
@@ -98,42 +128,8 @@ const GameWindow: React.FC = () => {
 					</div>
 				</div>
 				<div className="question__container button__container button__container--multiple">
-					<div className="button__container-item">
-						{questionVariants.map((variant) => {
-							if (variant.id < 3) {
-								return (
-									<div className="button__wrapper" key={variant.id}>
-										<button
-											className="button__item question__btn"
-											disabled={isDisabled}
-											onClick={() => handleClick(variant.id)}
-										>
-											<span className="text--primary">{variant.id < 2 ? 'A: ' : 'B: '}</span>
-											{variant.text}
-										</button>
-									</div>
-								);
-							}
-						})}
-					</div>
-					<div className="button__container-item">
-						{questionVariants.map((variant) => {
-							if (variant.id > 2) {
-								return (
-									<div className="button__wrapper" key={variant.id}>
-										<button
-											className="button__item question__btn"
-											disabled={isDisabled}
-											onClick={() => handleClick(variant.id)}
-										>
-											<span className="text--primary">{variant.id < 4 ? 'C: ' : 'D: '}</span>
-											{variant.text}
-										</button>
-									</div>
-								);
-							}
-						})}
-					</div>
+					<ButtonsContainer containerNumber={1} />
+					<ButtonsContainer containerNumber={2} />
 				</div>
 			</div>
 		</div>
