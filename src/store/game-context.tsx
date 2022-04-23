@@ -22,7 +22,7 @@ interface IGameContext {
 	questionText: string;
 	questionVariants: IVariants[];
 	questionId: number;
-	gameMove: (index: number, secondsLeft: number) => void;
+	gameMove: (isAnswerRight: boolean, secondsLeft: number) => void;
 	clearStates: () => void;
 	score: number;
 }

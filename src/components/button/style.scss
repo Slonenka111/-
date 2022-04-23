@@ -92,8 +92,12 @@
 		clip-path: polygon(20% 1%, 80% 1%, 98% 50%, 98% 50%, 80% 99%, 20% 99%, 2% 50%, 2% 50%);
 		cursor: pointer;
 
-		&:hover {
+		&:hover:not(.disabled) {
 			background: #5e025e;
+		}
+
+		&:hover > button:not([disabled]) {
+			background: #760376;
 		}
 
 		@media (max-width: 768px) {
@@ -117,10 +121,6 @@
 		&--bold {
 			font-weight: bold;
 			text-transform: uppercase;
-		}
-
-		&:hover {
-			background: #760376;
 		}
 	}
 }
