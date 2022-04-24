@@ -10,6 +10,7 @@ import classNames from 'classnames';
 const SECONDS_TO_ANSWER = 30;
 
 enum AnswerStatuses {
+	NoAnswer = 'no-answer',
 	Pending = 'pending',
 	Wrong = 'wrong',
 	Correct = 'correct',
@@ -19,7 +20,7 @@ const GameWindow: React.FC = () => {
 	const [isDisabled, setIsDisabled] = useState(false);
 	const [isPaused, setPaused] = useState(false);
 	const [answer, setAnswer] = useState<undefined | number>(undefined);
-	const [answerStatus, setAnswerStatus] = useState(AnswerStatuses.Pending);
+	const [answerStatus, setAnswerStatus] = useState(AnswerStatuses.NoAnswer);
 	const rightAnswer = useRef<undefined | number>(undefined);
 	const secondsLeftAfterAnswer = useRef(SECONDS_TO_ANSWER);
 
@@ -36,6 +37,7 @@ const GameWindow: React.FC = () => {
 	useEffect(() => {
 		rightAnswer.current = getRightAnswer(questionId);
 		return () => {
+			setAnswerStatus(AnswerStatuses.NoAnswer);
 			setAnswer(undefined);
 			rightAnswer.current = undefined;
 			setIsDisabled(false);
@@ -44,10 +46,10 @@ const GameWindow: React.FC = () => {
 	}, [questionId]);
 
 	const getAnswerButtonClassName = (index: number): string => {
-		if (answer && index === answer) return answerStatus;
+		if (index === answer) return answerStatus;
 		if (answerStatus === AnswerStatuses.Wrong && index === rightAnswer.current)
 			return AnswerStatuses.Correct;
-		return '';
+		return 'basic';
 	};
 
 	const handleClick = (index: number) => {
@@ -62,12 +64,18 @@ const GameWindow: React.FC = () => {
 			setTimeout(() => {
 				gameMove(rightAnswer.current === index, secondsLeftAfterAnswer.current);
 			}, 3000);
-		}, 3000);
+		}, 2000);
 	};
 
 	const handleTimeExpiration = useCallback(() => {
-		switchWindow(WindowState.end);
-		setResultGame(ResultGame.lose);
+		setIsDisabled(true);
+		setTimeout(() => {
+			setAnswerStatus(AnswerStatuses.Wrong);
+			setTimeout(() => {
+				switchWindow(WindowState.end);
+				setResultGame(ResultGame.expired);
+			}, 3000);
+		}, 2000);
 	}, [setResultGame, switchWindow]);
 
 	const ButtonsContainer: React.FC<{ containerNumber: 1 | 2 }> = ({ containerNumber }) => {
@@ -80,14 +88,22 @@ const GameWindow: React.FC = () => {
 					(variant) =>
 						(variant.id === firstVariantId || variant.id === secondVariantId) && (
 							<div
-								className={classNames('button__wrapper', { disabled: isDisabled })}
+								className={classNames('button__wrapper', {
+									disabled: isDisabled,
+									'disable-fogging': isDisabled && getAnswerButtonClassName(variant.id) === 'basic',
+								})}
 								key={variant.id}
 							>
 								<button
 									className={classNames(
 										'button__item',
 										'question__btn',
-										getAnswerButtonClassName(variant.id)
+										getAnswerButtonClassName(variant.id),
+										{
+											disabled: isDisabled,
+											'disable-fogging':
+												isDisabled && getAnswerButtonClassName(variant.id) === 'basic',
+										}
 									)}
 									disabled={isDisabled}
 									onClick={() => handleClick(variant.id)}

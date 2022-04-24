@@ -21,6 +21,7 @@ const EndWindow: React.FC = () => {
 			<h1 className="end-window__title">
 				{resultGame === ResultGame.lose && 'В следующий раз тебе обязательно повезет!'}
 				{resultGame === ResultGame.win && 'Ты стал миллионером!'}
+				{resultGame === ResultGame.expired && 'Время вышло!'}
 			</h1>
 			<div className="end-window__reward">
 				Твой счет:

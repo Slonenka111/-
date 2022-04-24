@@ -11,6 +11,7 @@ enum ResultGame {
 	default = 'default',
 	win = 'win',
 	lose = 'lose',
+	expired = 'expired',
 }
 
 interface IGameContext {
