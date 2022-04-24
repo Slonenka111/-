@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-d
 import { GameContextWrapper } from './components/context';
 import PageLayout from './components/PageLayout/PageLayout';
 import StartWindow from './route/start';
-import GameWindow from './route/game';
+import {GameWindow} from './route/game';
 import EndWindow from './route/end';
 import './components/button/style.scss';
 

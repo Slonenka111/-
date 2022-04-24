@@ -1,4 +1,4 @@
-import { getQuestions, QuestionDifficult, IVariants, TAnswerNumbers } from '../../data/questions';
+import { getQuestions, QuestionDifficult, IVariants, TAnswerNumbers } from "../../data/questions";
 
 type TgetQuestion = [questionText: string, questionVariants: IVariants[], questionId: number];
 
@@ -31,5 +31,21 @@ const getRightAnswer = (id: number): TAnswerNumbers => {
 	return question?.rightAnswer;
 };
 
-export { getRandomQuestion, getQuestionById, getRightAnswer };
+const getCallHint = (id: number, fiftyOption: boolean): number => {
+	const question = questions.filter((question) => question.id === id)[0];
+	let variants = question.variants
+	let countQurstion = 4
+	if (fiftyOption){
+		console.log(fiftyOption)
+		variants =variants.filter((variant) => variant.fiftyHint);
+		countQurstion = 2
+	}
+	const randomAnswer = variants[getRandom(countQurstion)];
+	const randomValue = getRandom(10);
+	console.log("fiftyOption", fiftyOption, "variants", variants);
+	console.log("question.rightAnswer", question.rightAnswer, "randomAnswer", randomAnswer.id, "ranVal", randomValue, randomValue < 5);
+	return randomValue < 5	 ? question.rightAnswer : randomAnswer.id;
+};
+
+export { getRandomQuestion, getQuestionById, getRightAnswer, getCallHint };
 export type { TgetQuestion };
