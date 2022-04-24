@@ -49,7 +49,7 @@ const Timer: React.FC<Props> = (timerProps) => {
 	};
 
 	return (
-		<div className={classNames('timer', { expired: expired })} style={timerStyle}>
+		<div className={classNames('timer', { expired })} style={timerStyle}>
 			{seconds}
 		</div>
 	);

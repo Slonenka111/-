@@ -23,9 +23,10 @@ interface IGameContext {
 	questionText: string;
 	questionVariants: IVariants[];
 	questionId: number;
-	gameMove: (isAnswerRight: boolean, secondsLeft: number) => void;
+	gameMove: (index: number, secondsLeft: number) => void;
 	clearStates: () => void;
 	score: number;
+	rightAnswer: number | undefined;
 }
 
 const value: IGameContext = {
@@ -40,6 +41,7 @@ const value: IGameContext = {
 	gameMove: () => {},
 	clearStates: () => {},
 	score: 0,
+	rightAnswer: undefined,
 };
 
 const GameContext: React.Context<IGameContext> = React.createContext(value);

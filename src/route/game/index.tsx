@@ -4,8 +4,8 @@ import { GameContext, ResultGame, WindowState } from '../../store/game-context';
 import Timer from '../../components/Timer/Timer';
 import { LevelRoadmap } from '../../components/LevelRoadmap/LevelRoadmap';
 import './style.scss';
-import { getRightAnswer } from '../../components/questions';
 import classNames from 'classnames';
+import { IVariants } from '../../data/questions';
 
 const SECONDS_TO_ANSWER = 30;
 
@@ -21,7 +21,6 @@ const GameWindow: React.FC = () => {
 	const [isPaused, setPaused] = useState(false);
 	const [answer, setAnswer] = useState<undefined | number>(undefined);
 	const [answerStatus, setAnswerStatus] = useState(AnswerStatuses.NoAnswer);
-	const rightAnswer = useRef<undefined | number>(undefined);
 	const secondsLeftAfterAnswer = useRef(SECONDS_TO_ANSWER);
 
 	const {
@@ -32,14 +31,13 @@ const GameWindow: React.FC = () => {
 		switchWindow,
 		setResultGame,
 		questionId,
+		rightAnswer,
 	} = useContext(GameContext);
 
 	useEffect(() => {
-		rightAnswer.current = getRightAnswer(questionId);
 		return () => {
 			setAnswerStatus(AnswerStatuses.NoAnswer);
 			setAnswer(undefined);
-			rightAnswer.current = undefined;
 			setIsDisabled(false);
 			setPaused(false);
 		};
@@ -47,7 +45,7 @@ const GameWindow: React.FC = () => {
 
 	const getAnswerButtonClassName = (index: number): string => {
 		if (index === answer) return answerStatus;
-		if (answerStatus === AnswerStatuses.Wrong && index === rightAnswer.current)
+		if (answerStatus === AnswerStatuses.Wrong && index === rightAnswer)
 			return AnswerStatuses.Correct;
 		return 'basic';
 	};
@@ -58,11 +56,11 @@ const GameWindow: React.FC = () => {
 		setAnswer(index);
 		setAnswerStatus(AnswerStatuses.Pending);
 		setTimeout(() => {
-			index === rightAnswer.current
+			index === rightAnswer
 				? setAnswerStatus(AnswerStatuses.Correct)
 				: setAnswerStatus(AnswerStatuses.Wrong);
 			setTimeout(() => {
-				gameMove(rightAnswer.current === index, secondsLeftAfterAnswer.current);
+				gameMove(index, secondsLeftAfterAnswer.current);
 			}, 3000);
 		}, 2000);
 	};
@@ -77,46 +75,6 @@ const GameWindow: React.FC = () => {
 			}, 3000);
 		}, 2000);
 	}, [setResultGame, switchWindow]);
-
-	const ButtonsContainer: React.FC<{ containerNumber: 1 | 2 }> = ({ containerNumber }) => {
-		const firstVariantId = containerNumber * 2 - 1;
-		const secondVariantId = containerNumber * 2;
-		const variantsLabels = ['A', 'B', 'C', 'D'];
-		return (
-			<div className="button__container-item">
-				{questionVariants.map(
-					(variant) =>
-						(variant.id === firstVariantId || variant.id === secondVariantId) && (
-							<div
-								className={classNames('button__wrapper', {
-									disabled: isDisabled,
-									'disable-fogging': isDisabled && getAnswerButtonClassName(variant.id) === 'basic',
-								})}
-								key={variant.id}
-							>
-								<button
-									className={classNames(
-										'button__item',
-										'question__btn',
-										getAnswerButtonClassName(variant.id),
-										{
-											disabled: isDisabled,
-											'disable-fogging':
-												isDisabled && getAnswerButtonClassName(variant.id) === 'basic',
-										}
-									)}
-									disabled={isDisabled}
-									onClick={() => handleClick(variant.id)}
-								>
-									<span className="text--primary">{`${variantsLabels[variant.id - 1]}: `}</span>
-									{variant.text}
-								</button>
-							</div>
-						)
-				)}
-			</div>
-		);
-	};
 
 	return (
 		<div className="game-window container">
@@ -144,10 +102,66 @@ const GameWindow: React.FC = () => {
 					</div>
 				</div>
 				<div className="question__container button__container button__container--multiple">
-					<ButtonsContainer containerNumber={1} />
-					<ButtonsContainer containerNumber={2} />
+					<ButtonsContainer
+						{...{
+							getAnswerButtonClassName,
+							isDisabled,
+							onButtonClick: handleClick,
+							questionVariants: questionVariants.slice(0, 2),
+						}}
+					/>
+					<ButtonsContainer
+						{...{
+							getAnswerButtonClassName,
+							isDisabled,
+							onButtonClick: handleClick,
+							questionVariants: questionVariants.slice(2),
+						}}
+					/>
 				</div>
 			</div>
+		</div>
+	);
+};
+
+interface ButtonsContainerProps {
+	questionVariants: IVariants[];
+	isDisabled: boolean;
+	getAnswerButtonClassName: (variantId: number) => string;
+	onButtonClick: (variantId: number) => void;
+}
+
+const ButtonsContainer: React.FC<ButtonsContainerProps> = (props) => {
+	const { questionVariants, isDisabled, getAnswerButtonClassName, onButtonClick } = props;
+	const variantIdToLabel = { 1: 'A', 2: 'B', 3: 'C', 4: 'D' };
+	return (
+		<div className="button__container-item">
+			{questionVariants.map((variant) => (
+				<div
+					className={classNames('button__wrapper', {
+						disabled: isDisabled,
+						'disable-fogging': isDisabled && getAnswerButtonClassName(variant.id) === 'basic',
+					})}
+					key={variant.id}
+				>
+					<button
+						className={classNames(
+							'button__item',
+							'question__btn',
+							getAnswerButtonClassName(variant.id),
+							{
+								disabled: isDisabled,
+								'disable-fogging': isDisabled && getAnswerButtonClassName(variant.id) === 'basic',
+							}
+						)}
+						disabled={isDisabled}
+						onClick={() => onButtonClick(variant.id)}
+					>
+						<span className="text--primary">{`${variantIdToLabel[variant.id]}: `}</span>
+						{variant.text}
+					</button>
+				</div>
+			))}
 		</div>
 	);
 };
