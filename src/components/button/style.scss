@@ -96,12 +96,14 @@ $button-hover-color: #760376;
 		clip-path: polygon(20% 1%, 80% 1%, 98% 50%, 98% 50%, 80% 99%, 20% 99%, 2% 50%, 2% 50%);
 		cursor: pointer;
 
-		&:hover:not(.disabled) {
-			background: #5e025e;
-		}
+		@media (hover: hover) {
+			&:hover:not(.disabled) {
+				background: #5e025e;
+			}
 
-		&:hover > button:not(.disabled) {
-			background: $button-hover-color;
+			&:hover > button:not(.disabled) {
+				background: $button-hover-color;
+			}
 		}
 
 		@media (max-width: 768px) {
