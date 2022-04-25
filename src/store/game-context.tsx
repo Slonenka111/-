@@ -11,6 +11,7 @@ enum ResultGame {
 	default = 'default',
 	win = 'win',
 	lose = 'lose',
+	expired = 'expired',
 }
 
 enum HintsType {
@@ -32,7 +33,7 @@ interface IGameContext {
 	questionText: string;
 	questionVariants: IVariants[];
 	questionId: number;
-	gameMove: (isAnswerRight: boolean, secondsLeft: number) => void;
+	gameMove: (index: number, secondsLeft: number) => void;
 	clearStates: () => void;
 	availableHints: THintsType;
 	changeAvailableHints: (name: HintsType)=> void;
@@ -41,6 +42,7 @@ interface IGameContext {
 	callHint: boolean;
 	switchCallHint: (status: boolean) => void;
 	score: number;
+	rightAnswer: number | undefined;
 }
 
 const value: IGameContext = {
@@ -65,6 +67,7 @@ const value: IGameContext = {
 	callHint: false,
 	switchCallHint: ()=>{},
 	score: 0,
+	rightAnswer: undefined,
 };
 
 const GameContext: React.Context<IGameContext> = React.createContext(value);

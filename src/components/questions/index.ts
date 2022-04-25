@@ -26,8 +26,8 @@ const getQuestionById = (id: number): TgetQuestion => {
 	return [question.text, question.variants, question.id];
 };
 
-const getRightAnswer = (id: number): TAnswerNumbers => {
-	const question = questions.filter((question) => question.id === id)[0];
+const getRightAnswer = (id: number): TAnswerNumbers | undefined => {
+	const question = questions.find((question) => question.id === id);
 	return question?.rightAnswer;
 };
 

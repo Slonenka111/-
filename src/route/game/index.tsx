@@ -11,6 +11,7 @@ import { LevelRoadmap } from "../../components/LevelRoadmap/LevelRoadmap";
 import { getRightAnswer } from "../../components/questions";
 import { Hints } from "../../components/Hints";
 import {CallHint} from "../../components/CallHint";
+import { IVariants } from '../../data/questions';
 import classNames from "classnames";
 import "../../components/questions/style.scss";
 import "./style.scss";
@@ -18,17 +19,17 @@ import "./style.scss";
 const SECONDS_TO_ANSWER = 30;
 
 enum AnswerStatuses {
-	Pending = "pending",
-	Wrong = "wrong",
-	Correct = "correct",
+	NoAnswer = 'no-answer',
+	Pending = 'pending',
+	Wrong = 'wrong',
+	Correct = 'correct',
 }
 
 const GameWindow: React.FC = () => {
 	const [isDisabled, setIsDisabled] = useState(false);
 	const [isPaused, setPaused] = useState(false);
 	const [answer, setAnswer] = useState<undefined | number>(undefined);
-	const [answerStatus, setAnswerStatus] = useState(AnswerStatuses.Pending);
-	const rightAnswer = useRef<undefined | number>(undefined);
+	const [answerStatus, setAnswerStatus] = useState(AnswerStatuses.NoAnswer);
 	const secondsLeftAfterAnswer = useRef(SECONDS_TO_ANSWER);
 
 	const {
@@ -39,6 +40,7 @@ const GameWindow: React.FC = () => {
 		switchWindow,
 		setResultGame,
 		questionId,
+		rightAnswer,
 		changeAvailableHints,
 		fiftyHint,
 		switchFiftyHint,
@@ -47,10 +49,9 @@ const GameWindow: React.FC = () => {
 	} = useContext(GameContext);
 
 	useEffect(() => {
-		rightAnswer.current = getRightAnswer(questionId);
 		return () => {
+			setAnswerStatus(AnswerStatuses.NoAnswer);
 			setAnswer(undefined);
-			rightAnswer.current = undefined;
 			setIsDisabled(false);
 			setPaused(false);
 		};
@@ -81,10 +82,10 @@ const GameWindow: React.FC = () => {
 	}, []);
 
 	const getAnswerButtonClassName = (index: number): string => {
-		if (answer && index === answer) return answerStatus;
-		if (answerStatus === AnswerStatuses.Wrong && index === rightAnswer.current)
+		if (index === answer) return answerStatus;
+		if (answerStatus === AnswerStatuses.Wrong && index === rightAnswer)
 			return AnswerStatuses.Correct;
-		return "";
+		return 'basic';
 	};
 
 	const handleClick = (index: number) => {
@@ -93,57 +94,51 @@ const GameWindow: React.FC = () => {
 		setAnswer(index);
 		setAnswerStatus(AnswerStatuses.Pending);
 		setTimeout(() => {
-			index === rightAnswer.current
+			index === rightAnswer
 				? setAnswerStatus(AnswerStatuses.Correct)
 				: setAnswerStatus(AnswerStatuses.Wrong);
 			setTimeout(() => {
-				gameMove(rightAnswer.current === index, secondsLeftAfterAnswer.current);
+				gameMove(index, secondsLeftAfterAnswer.current);
 			}, 3000);
-		}, 3000);
+		}, 2000);
 	};
 
 	const handleTimeExpiration = useCallback(() => {
-		switchWindow(WindowState.end);
-		setResultGame(ResultGame.lose);
+		setIsDisabled(true);
+		setTimeout(() => {
+			setAnswerStatus(AnswerStatuses.Wrong);
+			setTimeout(() => {
+				switchWindow(WindowState.end);
+				setResultGame(ResultGame.expired);
+			}, 3000);
+		}, 2000);
 	}, [setResultGame, switchWindow]);
 
 	const ButtonsContainer: React.FC<{ containerNumber: 1 | 2 }> = ({ containerNumber }) => {
 		const firstVariantId = containerNumber * 2 - 1;
 		const secondVariantId = containerNumber * 2;
-		const variantsLabels = ["A", "B", "C", "D"];
+		const variantsLabels = ['A', 'B', 'C', 'D'];
 		return (
 			<div className="button__container-item">
 				{questionVariants.map(
 					(variant) =>
 						(variant.id === firstVariantId || variant.id === secondVariantId) && (
 							<div
-								className={classNames("button__wrapper", { disabled: isDisabled })}
+								className={classNames('button__wrapper', { disabled: isDisabled })}
 								key={variant.id}
 							>
-								{(!fiftyHint || variant.fiftyHint) ? (
-									<button
-										className={classNames(
-											"button__item",
-											"question__btn",
-											getAnswerButtonClassName(variant.id)
-										)}
-										disabled={isDisabled}
-										onClick={() => handleClick(variant.id)}
-									>
-										{(!fiftyHint || variant.fiftyHint) &&
-											<><span
-												className="text--primary">{`${variantsLabels[variant.id - 1]}: `}</span>{variant.text}</>}
-									</button>
-								) : (
-									<button
-										className={classNames(
-											"button__item",
-											"question__btn"
-										)}
-									>
-									</button>
-								)}
-
+								<button
+									className={classNames(
+										'button__item',
+										'question__btn',
+										getAnswerButtonClassName(variant.id)
+									)}
+									disabled={isDisabled}
+									onClick={() => handleClick(variant.id)}
+								>
+									<span className="text--primary">{`${variantsLabels[variant.id - 1]}: `}</span>
+									{variant.text}
+								</button>
 							</div>
 						)
 				)}
@@ -178,13 +173,69 @@ const GameWindow: React.FC = () => {
 					</div>
 				</div>
 				<div className="question__container button__container button__container--multiple">
-					<ButtonsContainer containerNumber={1} />
-					<ButtonsContainer containerNumber={2} />
+					<ButtonsContainer
+						{...{
+							getAnswerButtonClassName,
+							isDisabled,
+							onButtonClick: handleClick,
+							questionVariants: questionVariants.slice(0, 2),
+						}}
+					/>
+					<ButtonsContainer
+						{...{
+							getAnswerButtonClassName,
+							isDisabled,
+							onButtonClick: handleClick,
+							questionVariants: questionVariants.slice(2),
+						}}
+					/>
 				</div>
 			</div>
 		</div>
 	);
 };
 
-export { GameWindow, HintsType };
-export type { THintsType };
+interface ButtonsContainerProps {
+	questionVariants: IVariants[];
+	isDisabled: boolean;
+	getAnswerButtonClassName: (variantId: number) => string;
+	onButtonClick: (variantId: number) => void;
+}
+
+const ButtonsContainer: React.FC<ButtonsContainerProps> = (props) => {
+	const { questionVariants, isDisabled, getAnswerButtonClassName, onButtonClick } = props;
+	const variantIdToLabel = { 1: 'A', 2: 'B', 3: 'C', 4: 'D' };
+	return (
+		<div className="button__container-item">
+			{questionVariants.map((variant) => (
+				<div
+					className={classNames('button__wrapper', {
+						disabled: isDisabled,
+						'disable-fogging': isDisabled && getAnswerButtonClassName(variant.id) === 'basic',
+					})}
+					key={variant.id}
+				>
+					<button
+						className={classNames(
+							'button__item',
+							'question__btn',
+							getAnswerButtonClassName(variant.id),
+							{
+								disabled: isDisabled,
+								'disable-fogging': isDisabled && getAnswerButtonClassName(variant.id) === 'basic',
+							}
+						)}
+						disabled={isDisabled}
+						onClick={() => onButtonClick(variant.id)}
+					>{(!fiftyHint || variant.fiftyHint) &&
+						<><span className="text--primary">{`${variantIdToLabel[variant.id]}: `}</span>
+						{variant.text}</>}
+					</button>
+				</div>
+			))}
+		</div>
+	);
+};
+
+export { GameWindow };
+

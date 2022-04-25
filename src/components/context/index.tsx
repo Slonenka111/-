@@ -8,7 +8,7 @@ import {
 	THintsType,
 	HintsType
 } from "../../store/game-context";
-import { getQuestionById, getRandomQuestion } from "../questions";
+import { getQuestionById, getRandomQuestion, getRightAnswer } from "../questions";
 import { useNavigate } from "react-router-dom";
 
 let passQuestions: number[] = [];
@@ -52,6 +52,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 		return getRandomQuestion(difficult, passQuestions);
 	});
 	const [score, setScore] = useState(0);
+	const [rightAnswer, setRightAnswer] = useState<undefined | number>(undefined);
 	const [availableHints, setAvailableHints] = useState<THintsType>({
 		[HintsType.fiftyAvailable]: false,
 		[HintsType.callAvailable]: false,
@@ -66,7 +67,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 	const switchWindow = useCallback(
 		(targetWindow: WindowState) => {
 			setWindowState(targetWindow);
-			// navigate(targetWindow);
+			navigate(targetWindow);
 		},
 		[navigate]
 	);
@@ -76,7 +77,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 		let gameState;
 
 		try {
-			gameState = JSON.parse(localStorage.getItem("GameState") as string);
+			gameState = JSON.parse(localStorage.getItem('GameState') as string);
 		} catch (e) {
 			console.error(e);
 		}
@@ -93,7 +94,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 				availableHints,
 				fiftyHint
 			);
-			if (newGameState) localStorage.setItem("GameState", newGameState);
+			if (newGameState) localStorage.setItem('GameState', newGameState);
 			switchWindow(WindowState.start);
 		} else {
 			switchWindow(gameState.windowState);
@@ -130,11 +131,15 @@ const GameContextWrapper: React.FC = ({ children }) => {
 		if (newGameState) localStorage.setItem("GameState", newGameState);
 	}, [windowState, resultGame, questionNumber, difficult, questionId, score, availableHints, fiftyHint]);
 
+	useEffect(() => {
+		setRightAnswer(getRightAnswer(questionId));
+	}, [questionId]);
+
 	const gameMove = useCallback(
-		(isAnswerRight, secondsLeft) => {
+		(index, secondsLeft) => {
 			// Обработка не верного ответа - проигрыша
-			if (!isAnswerRight) {
-				console.log("LOSE");
+			if (index !== rightAnswer) {
+				console.log('LOSE');
 				switchWindow(WindowState.end);
 				setResultGame(ResultGame.lose);
 				return;
@@ -144,7 +149,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 
 			// Обработка верного ответа на 15-й вопрос - победа
 			if (questionNumber === 14) {
-				console.log("WIN");
+				console.log('WIN');
 				switchWindow(WindowState.end);
 				setResultGame(ResultGame.win);
 				return;
@@ -157,12 +162,12 @@ const GameContextWrapper: React.FC = ({ children }) => {
 				passQuestions.length < 4
 					? QuestionDifficult.easy
 					: passQuestions.length < 9
-						? QuestionDifficult.medium
-						: QuestionDifficult.hard
+					? QuestionDifficult.medium
+					: QuestionDifficult.hard
 			);
 			setQuestion(getRandomQuestion(difficult, passQuestions));
 		},
-		[questionId, questionNumber, difficult, switchWindow]
+		[rightAnswer, questionNumber, questionId, difficult, switchWindow]
 	);
 
 	const clearStates = useCallback(() => {
@@ -212,7 +217,8 @@ const GameContextWrapper: React.FC = ({ children }) => {
 			fiftyHint,
 			switchFiftyHint,
 			callHint,
-			switchCallHint
+			switchCallHint,
+			rightAnswer,
 		}),
 		[
 			windowState,
@@ -231,7 +237,8 @@ const GameContextWrapper: React.FC = ({ children }) => {
 			fiftyHint,
 			switchFiftyHint,
 			callHint,
-			switchCallHint
+			switchCallHint,
+			rightAnswer,
 		]
 	);
 
@@ -239,4 +246,3 @@ const GameContextWrapper: React.FC = ({ children }) => {
 };
 
 export { GameContextWrapper, ResultGame };
-

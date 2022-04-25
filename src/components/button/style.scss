@@ -1,3 +1,7 @@
+$button-item-color: #1d0c1e;
+$button-wrapper-color: blueviolet;
+$button-hover-color: #760376;
+
 .button {
 	&__container {
 		display: flex;
@@ -88,7 +92,7 @@
 		position: relative;
 		z-index: 1;
 
-		background-color: blueviolet;
+		background-color: $button-wrapper-color;
 		clip-path: polygon(20% 1%, 80% 1%, 98% 50%, 98% 50%, 80% 99%, 20% 99%, 2% 50%, 2% 50%);
 		cursor: pointer;
 
@@ -96,12 +100,16 @@
 			background: #5e025e;
 		}
 
-		&:hover > button:not([disabled]) {
-			background: #760376;
+		&:hover > button:not(.disabled) {
+			background: $button-hover-color;
 		}
 
 		@media (max-width: 768px) {
 			width: 85%;
+		}
+
+		&.disable-fogging {
+			background-color: rgba($button-wrapper-color, 0.4);
 		}
 	}
 
@@ -127,9 +135,54 @@
 			font-weight: bold;
 			text-transform: uppercase;
 		}
+
+		&.disable-fogging {
+			cursor: auto;
+			color: rgba(white, 0.4);
+
+			.text--primary {
+				opacity: 0.4;
+			}
+		}
+
+		&.correct {
+			background: #487c19;
+		}
+
+		&.wrong {
+			background: #9b1021;
+		}
+
+		&.pending {
+			animation: blink 2s forwards;
+		}
+
+		@keyframes blink {
+			0% {
+				background: $button-hover-color;
+			}
+			30% {
+				background: $button-hover-color;
+			}
+			44% {
+				background: $button-item-color;
+			}
+			58% {
+				background: $button-hover-color;
+			}
+			72% {
+				background: $button-item-color;
+			}
+			86% {
+				background: $button-hover-color;
+			}
+			100% {
+				background: $button-item-color;
+			}
+		}
 	}
 }
 
-button:disabled {
-	background-color: aquamarine;
+.disabled {
+	cursor: auto;
 }
