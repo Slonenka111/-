@@ -187,6 +187,7 @@ const ButtonsContainer: React.FC<ButtonsContainerProps> = (props) => {
 					<button
 						className={classNames(
 							'button__item',
+							'button__item--viewers-result',
 							'question__btn',
 							getAnswerButtonClassName(variant.id),
 							{
@@ -196,6 +197,7 @@ const ButtonsContainer: React.FC<ButtonsContainerProps> = (props) => {
 						)}
 						disabled={isDisabled || (fiftyHint && !variant.fiftyHint)}
 						onClick={() => onButtonClick(variant.id)}
+						style={{ '--viewers-vote': 10 }}
 					>
 						{(!fiftyHint || variant.fiftyHint) && (
 							<>

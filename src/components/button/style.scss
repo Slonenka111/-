@@ -126,15 +126,23 @@ $button-hover-color: #760376;
 		cursor: pointer;
 		transition: all 0.3s;
 
-		&--test {
-			background: rgb(56, 128, 32);
-			background: linear-gradient(
-				90deg,
-				rgba(56, 128, 32, 1) 0%,
-				rgba(56, 128, 32, 1) 40%,
-				rgba(29, 12, 30, 1) 40%,
-				rgba(29, 12, 30, 1) 100%
-			) !important;
+		&--viewers-result {
+			--viewers-vote: 0;
+			position: relative;
+
+			&:after {
+				content: '';
+				position: absolute;
+				z-index: -1;
+				left: -100%;
+				transition: 0.3s;
+				transform: translateX(calc(var(--viewers-vote) * 1%));
+				top: 0;
+				display: block;
+				width: 100%;
+				height: 100%;
+				background-color: #487c19;
+			}
 		}
 
 		&--bold {
