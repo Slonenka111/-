@@ -15,7 +15,7 @@ export interface IVariants {
 	fiftyHint: boolean;
 }
 
-interface IQuestions {
+export interface IQuestions {
 	id: number;
 	difficult: QuestionDifficult;
 	text: string;

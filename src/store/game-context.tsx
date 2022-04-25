@@ -1,5 +1,5 @@
 import React from 'react';
-import { IVariants } from '../data/questions';
+import { IVariants, QuestionDifficult, TAnswerNumbers } from '../data/questions';
 
 enum WindowState {
 	start = '/',
@@ -24,9 +24,14 @@ type THintsType = {
 	[key in HintsType]: boolean;
 };
 
+type TViewerHint = {
+	[key in TAnswerNumbers]: number;
+};
+
 interface IGameContext {
 	windowState: WindowState;
 	resultGame: string;
+	difficult: QuestionDifficult;
 	switchWindow: (state: WindowState) => void;
 	setResultGame: (resultGame: ResultGame) => void;
 	questionNumber: number;
@@ -41,6 +46,8 @@ interface IGameContext {
 	switchFiftyHint: (status: boolean) => void;
 	callHint: string;
 	switchCallHint: (status: string) => void;
+	viewerHint: TViewerHint;
+	switchViewerHint: (status: TViewerHint) => void;
 	score: number;
 	rightAnswer: number | undefined;
 }
@@ -48,6 +55,7 @@ interface IGameContext {
 const value: IGameContext = {
 	windowState: WindowState.start,
 	resultGame: ResultGame.default,
+	difficult: QuestionDifficult.easy,
 	switchWindow: () => {},
 	setResultGame: () => {},
 	questionNumber: 0,
@@ -66,6 +74,13 @@ const value: IGameContext = {
 	switchFiftyHint: () => {},
 	callHint: '',
 	switchCallHint: () => {},
+	viewerHint: {
+		'1': 0,
+		'2': 0,
+		'3': 0,
+		'4': 0,
+	},
+	switchViewerHint: () => {},
 	score: 0,
 	rightAnswer: undefined,
 };
@@ -74,4 +89,4 @@ const GameContext: React.Context<IGameContext> = React.createContext(value);
 GameContext.displayName = 'GameContext';
 
 export { WindowState, ResultGame, GameContext, HintsType };
-export type { IGameContext, THintsType };
+export type { IGameContext, THintsType, TViewerHint };

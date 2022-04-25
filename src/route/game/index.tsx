@@ -1,8 +1,14 @@
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
-import { GameContext, ResultGame, WindowState, HintsType } from '../../store/game-context';
+import {
+	GameContext,
+	ResultGame,
+	WindowState,
+	HintsType,
+	TViewerHint,
+} from '../../store/game-context';
 import Timer from '../../components/Timer/Timer';
 import { LevelRoadmap } from '../../components/LevelRoadmap/LevelRoadmap';
-import { getCallHint } from '../../components/questions';
+import { getCallHint, getViewerHint } from '../../components/questions';
 import { Hints } from '../../components/Hints';
 import { CallHint } from '../../components/CallHint';
 import { IVariants } from '../../data/questions';
@@ -30,6 +36,7 @@ const GameWindow: React.FC = () => {
 		questionNumber,
 		questionText,
 		questionVariants,
+		difficult,
 		gameMove,
 		switchWindow,
 		setResultGame,
@@ -40,6 +47,8 @@ const GameWindow: React.FC = () => {
 		switchFiftyHint,
 		callHint,
 		switchCallHint,
+		viewerHint,
+		switchViewerHint,
 	} = useContext(GameContext);
 
 	useEffect(() => {
@@ -54,8 +63,18 @@ const GameWindow: React.FC = () => {
 	useEffect(() => {
 		switchFiftyHint(false);
 		switchCallHint('');
+		switchViewerHint({
+			1: 0,
+			2: 0,
+			3: 0,
+			4: 0,
+		});
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [questionNumber]);
+
+	useEffect(() => {
+		if (fiftyHint && viewerHint) switchViewerHint(getViewerHint(questionId, difficult, fiftyHint));
+	}, [fiftyHint]);
 
 	const handleClickAvailableHints = useCallback(
 		(name: HintsType) => {
@@ -67,14 +86,26 @@ const GameWindow: React.FC = () => {
 					switchCallHint(getCallHint(questionId, fiftyHint));
 					break;
 				case HintsType.viewersAvailable:
-					console.log('viewersAvailable');
+					setPaused(true);
+					switchViewerHint(getViewerHint(questionId, difficult, fiftyHint));
+					setTimeout(() => {
+						setPaused(false);
+					}, 2000);
 					break;
 				default:
 					console.error('Получен неизвестный тип подсказки');
 			}
 			changeAvailableHints(name);
 		},
-		[changeAvailableHints, fiftyHint, questionId, switchCallHint, switchFiftyHint]
+		[
+			changeAvailableHints,
+			difficult,
+			fiftyHint,
+			questionId,
+			switchCallHint,
+			switchFiftyHint,
+			switchViewerHint,
+		]
 	);
 
 	const getAnswerButtonClassName = (index: number): string => {
@@ -89,6 +120,12 @@ const GameWindow: React.FC = () => {
 		setIsDisabled(true);
 		setAnswer(index);
 		setAnswerStatus(AnswerStatuses.Pending);
+		switchViewerHint({
+			1: 0,
+			2: 0,
+			3: 0,
+			4: 0,
+		});
 		setTimeout(() => {
 			index === rightAnswer
 				? setAnswerStatus(AnswerStatuses.Correct)
@@ -144,6 +181,7 @@ const GameWindow: React.FC = () => {
 							onButtonClick: handleClick,
 							questionVariants: questionVariants.slice(0, 2),
 							fiftyHint: fiftyHint,
+							viewerHint: viewerHint,
 						}}
 					/>
 					<ButtonsContainer
@@ -153,6 +191,7 @@ const GameWindow: React.FC = () => {
 							onButtonClick: handleClick,
 							questionVariants: questionVariants.slice(2),
 							fiftyHint: fiftyHint,
+							viewerHint: viewerHint,
 						}}
 					/>
 				</div>
@@ -167,11 +206,18 @@ interface ButtonsContainerProps {
 	getAnswerButtonClassName: (variantId: number) => string;
 	onButtonClick: (variantId: number) => void;
 	fiftyHint: boolean;
+	viewerHint: TViewerHint;
 }
 
 const ButtonsContainer: React.FC<ButtonsContainerProps> = (props) => {
-	const { questionVariants, isDisabled, getAnswerButtonClassName, onButtonClick, fiftyHint } =
-		props;
+	const {
+		questionVariants,
+		isDisabled,
+		getAnswerButtonClassName,
+		onButtonClick,
+		fiftyHint,
+		viewerHint,
+	} = props;
 	const variantIdToLabel = Object.freeze({ 1: 'A', 2: 'B', 3: 'C', 4: 'D' });
 
 	return (
@@ -197,7 +243,9 @@ const ButtonsContainer: React.FC<ButtonsContainerProps> = (props) => {
 						)}
 						disabled={isDisabled || (fiftyHint && !variant.fiftyHint)}
 						onClick={() => onButtonClick(variant.id)}
-						style={{ '--viewers-vote': 10 }}
+						style={{
+							'--viewers-vote': !(fiftyHint && !variant.fiftyHint) ? viewerHint[variant.id] : 0,
+						}}
 					>
 						{(!fiftyHint || variant.fiftyHint) && (
 							<>

@@ -7,6 +7,7 @@ import {
 	ResultGame,
 	THintsType,
 	HintsType,
+	TViewerHint,
 } from '../../store/game-context';
 import { getQuestionById, getRandomQuestion, getRightAnswer } from '../questions';
 import { useNavigate } from 'react-router-dom';
@@ -23,7 +24,8 @@ const createGameStateString = (
 	score: number,
 	availableHints: THintsType,
 	fiftyHint: boolean,
-	callHint: string
+	callHint: string,
+	viewerHint: TViewerHint
 ): string | undefined => {
 	const gameState = {
 		windowState: windowState,
@@ -36,6 +38,7 @@ const createGameStateString = (
 		availableHints: availableHints,
 		fiftyHint: fiftyHint,
 		callHint: callHint,
+		viewerHint: viewerHint,
 	};
 
 	try {
@@ -60,8 +63,14 @@ const GameContextWrapper: React.FC = ({ children }) => {
 		[HintsType.callAvailable]: false,
 		[HintsType.viewersAvailable]: false,
 	});
-	const [fiftyHint, setFiftyHint] = useState(false);
+	const [fiftyHint, setFiftyHint] = useState<boolean>(false);
 	const [callHint, setCallHint] = useState<string>('');
+	const [viewerHint, setViewerHint] = useState<TViewerHint>({
+		1: 0,
+		2: 0,
+		3: 0,
+		4: 0,
+	});
 
 	const navigate = useNavigate();
 
@@ -94,7 +103,8 @@ const GameContextWrapper: React.FC = ({ children }) => {
 				score,
 				availableHints,
 				fiftyHint,
-				callHint
+				callHint,
+				viewerHint
 			);
 			if (newGameState) localStorage.setItem('GameState', newGameState);
 			switchWindow(WindowState.start);
@@ -109,6 +119,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 			setAvailableHints(gameState.availableHints);
 			setFiftyHint(gameState.fiftyHint);
 			setCallHint(gameState.callHint);
+			setViewerHint(gameState.viewerHint);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
@@ -125,7 +136,8 @@ const GameContextWrapper: React.FC = ({ children }) => {
 			score,
 			availableHints,
 			fiftyHint,
-			callHint
+			callHint,
+			viewerHint
 		);
 		if (newGameState) localStorage.setItem('GameState', newGameState);
 	}, [
@@ -206,11 +218,16 @@ const GameContextWrapper: React.FC = ({ children }) => {
 		setCallHint(status);
 	}, []);
 
+	const switchViewerHint = useCallback((status: TViewerHint) => {
+		setViewerHint(status);
+	}, []);
+
 	const value = useMemo<IGameContext>(
 		() => ({
 			windowState,
 			resultGame,
 			switchWindow,
+			difficult,
 			setResultGame,
 			questionNumber,
 			questionText,
@@ -225,12 +242,15 @@ const GameContextWrapper: React.FC = ({ children }) => {
 			switchFiftyHint,
 			callHint,
 			switchCallHint,
+			viewerHint,
+			switchViewerHint,
 			rightAnswer,
 		}),
 		[
 			windowState,
 			resultGame,
 			switchWindow,
+			difficult,
 			setResultGame,
 			questionNumber,
 			questionText,
@@ -245,6 +265,8 @@ const GameContextWrapper: React.FC = ({ children }) => {
 			switchFiftyHint,
 			callHint,
 			switchCallHint,
+			viewerHint,
+			switchViewerHint,
 			rightAnswer,
 		]
 	);

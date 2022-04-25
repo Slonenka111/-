@@ -126,6 +126,10 @@ $button-hover-color: #760376;
 		cursor: pointer;
 		transition: all 0.3s;
 
+		@media (max-width: 678px) {
+			font-size: 18px;
+		}
+
 		&--viewers-result {
 			--viewers-vote: 0;
 			position: relative;
@@ -135,7 +139,7 @@ $button-hover-color: #760376;
 				position: absolute;
 				z-index: -1;
 				left: -100%;
-				transition: 0.3s;
+				transition: 2s;
 				transform: translateX(calc(var(--viewers-vote) * 1%));
 				top: 0;
 				display: block;
