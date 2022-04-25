@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { QuestionDifficult } from '../../data/questions';
 import { GameContext, IGameContext, WindowState, ResultGame } from '../../store/game-context';
-import { checkAnswer, getQuestionById, getRandomQuestion } from '../questions';
+import { getQuestionById, getRandomQuestion, getRightAnswer } from '../questions';
 import { useNavigate } from 'react-router-dom';
 
 let passQuestions: number[] = [];
@@ -41,6 +41,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 		return getRandomQuestion(difficult, passQuestions);
 	});
 	const [score, setScore] = useState(0);
+	const [rightAnswer, setRightAnswer] = useState<undefined | number>(undefined);
 
 	const navigate = useNavigate();
 
@@ -99,12 +100,14 @@ const GameContextWrapper: React.FC = ({ children }) => {
 		if (newGameState) localStorage.setItem('GameState', newGameState);
 	}, [windowState, resultGame, questionNumber, difficult, questionId, score]);
 
-	const gameMove = useCallback(
-		(index: number, secondsLeft: number) => {
-			const isRight = checkAnswer(questionId, index);
+	useEffect(() => {
+		setRightAnswer(getRightAnswer(questionId));
+	}, [questionId]);
 
+	const gameMove = useCallback(
+		(index, secondsLeft) => {
 			// Обработка не верного ответа - проигрыша
-			if (!isRight) {
+			if (index !== rightAnswer) {
 				console.log('LOSE');
 				switchWindow(WindowState.end);
 				setResultGame(ResultGame.lose);
@@ -133,7 +136,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 			);
 			setQuestion(getRandomQuestion(difficult, passQuestions));
 		},
-		[questionId, questionNumber, difficult, switchWindow]
+		[rightAnswer, questionNumber, questionId, difficult, switchWindow]
 	);
 
 	const clearStates = useCallback(() => {
@@ -159,6 +162,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 			gameMove,
 			score,
 			clearStates,
+			rightAnswer,
 		}),
 		[
 			windowState,
@@ -172,6 +176,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 			gameMove,
 			score,
 			clearStates,
+			rightAnswer,
 		]
 	);
 

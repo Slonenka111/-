@@ -11,6 +11,7 @@ enum ResultGame {
 	default = 'default',
 	win = 'win',
 	lose = 'lose',
+	expired = 'expired',
 }
 
 interface IGameContext {
@@ -25,6 +26,7 @@ interface IGameContext {
 	gameMove: (index: number, secondsLeft: number) => void;
 	clearStates: () => void;
 	score: number;
+	rightAnswer: number | undefined;
 }
 
 const value: IGameContext = {
@@ -39,6 +41,7 @@ const value: IGameContext = {
 	gameMove: () => {},
 	clearStates: () => {},
 	score: 0,
+	rightAnswer: undefined,
 };
 
 const GameContext: React.Context<IGameContext> = React.createContext(value);

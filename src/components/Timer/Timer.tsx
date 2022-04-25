@@ -1,5 +1,6 @@
 import React, { CSSProperties, useCallback, useEffect, useRef, useState } from 'react';
 import './Timer.scss';
+import classNames from 'classnames';
 
 interface Props {
 	paused: boolean;
@@ -19,6 +20,7 @@ declare module 'react' {
 const Timer: React.FC<Props> = (timerProps) => {
 	const { paused, duration, onTimeExpiration, onPause } = timerProps;
 	const [seconds, setSeconds] = useState(duration);
+	const [expired, setExpired] = useState(false);
 	const timer = useRef<number | undefined>();
 	const clearInterval = useCallback((timer) => {
 		if (timer.current) window.clearInterval(timer.current);
@@ -27,22 +29,27 @@ const Timer: React.FC<Props> = (timerProps) => {
 
 	useEffect(() => {
 		if (seconds <= 0) {
-			onTimeExpiration();
+			if (!expired) {
+				setExpired(true);
+				onTimeExpiration();
+			}
 		} else {
 			paused
 				? onPause(seconds)
 				: (timer.current = window.setInterval(() => setSeconds((v) => v - 1), 1000));
 		}
 		return () => clearInterval(timer);
-	}, [seconds, onTimeExpiration, clearInterval, paused, onPause]);
+	}, [seconds, clearInterval, paused, onPause, expired, onTimeExpiration]);
 
 	const timerStyle: CSSProperties = {
 		'--deg': `${360 - (360 / duration) * seconds} `,
-		'--col': `hsla(${(100 / duration) * seconds}, 100%, ${50 - duration / seconds}%, 1)`,
+		'--col': `hsla(${(100 / duration) * seconds}, 100%, ${
+			50 - duration / Math.max(1, seconds)
+		}%, 1)`,
 	};
 
 	return (
-		<div className="timer" style={timerStyle}>
+		<div className={classNames('timer', { expired })} style={timerStyle}>
 			{seconds}
 		</div>
 	);

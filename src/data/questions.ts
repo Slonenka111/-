@@ -7,7 +7,7 @@ export enum QuestionDifficult {
 	hard = 'hard',
 }
 
-type TAnswerNumbers = 1 | 2 | 3 | 4;
+export type TAnswerNumbers = 1 | 2 | 3 | 4;
 
 export interface IVariants {
 	id: TAnswerNumbers;
