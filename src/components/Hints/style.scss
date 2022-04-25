@@ -11,14 +11,13 @@
 		border-radius: 47%;
 		overflow: hidden;
 		cursor: pointer;
-		transition: .3s;
+		transition: 0.3s;
 
 		&:hover {
 			box-shadow: inset 0 0 10px blueviolet;
 		}
 
 		&:disabled {
-
 			&:after {
 				content: '\2716';
 				position: absolute;
@@ -36,7 +35,5 @@
 				cursor: default;
 			}
 		}
-
 	}
-
 }

@@ -1,17 +1,16 @@
-import React, { useContext } from "react";
-import "./style.scss";
-import fiftyIcon from "../../assets/icon/fifty-icon.svg";
-import phoneIcon from "../../assets/icon/phone-icon.svg";
-import viewersIcon from "../../assets/icon/viewers-icon.svg";
-import { GameContext, HintsType } from "../../store/game-context";
+import React, { useContext } from 'react';
+import './style.scss';
+import fiftyIcon from '../../assets/icon/fifty-icon.svg';
+import phoneIcon from '../../assets/icon/phone-icon.svg';
+import viewersIcon from '../../assets/icon/viewers-icon.svg';
+import { GameContext, HintsType } from '../../store/game-context';
 
 interface IHintProps {
 	handleClick: (name: HintsType) => void;
 }
 
 const Hints: React.FC<IHintProps> = (props) => {
-
-	const {availableHints} = useContext(GameContext)
+	const { availableHints } = useContext(GameContext);
 
 	const { handleClick } = props;
 
@@ -39,6 +38,4 @@ const Hints: React.FC<IHintProps> = (props) => {
 	);
 };
 
-export {
-	Hints
-};
+export { Hints };

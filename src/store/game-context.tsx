@@ -15,14 +15,14 @@ enum ResultGame {
 }
 
 enum HintsType {
-	fiftyAvailable = "fiftyAvailable",
-	callAvailable = "callAvailable",
-	viewersAvailable = "viewersAvailable"
+	fiftyAvailable = 'fiftyAvailable',
+	callAvailable = 'callAvailable',
+	viewersAvailable = 'viewersAvailable',
 }
 
 type THintsType = {
-	[key in HintsType]: boolean
-}
+	[key in HintsType]: boolean;
+};
 
 interface IGameContext {
 	windowState: WindowState;
@@ -36,11 +36,11 @@ interface IGameContext {
 	gameMove: (index: number, secondsLeft: number) => void;
 	clearStates: () => void;
 	availableHints: THintsType;
-	changeAvailableHints: (name: HintsType)=> void;
+	changeAvailableHints: (name: HintsType) => void;
 	fiftyHint: boolean;
-	switchFiftyHint: (status: boolean)=> void;
-	callHint: boolean;
-	switchCallHint: (status: boolean) => void;
+	switchFiftyHint: (status: boolean) => void;
+	callHint: string;
+	switchCallHint: (status: string) => void;
 	score: number;
 	rightAnswer: number | undefined;
 }
@@ -59,13 +59,13 @@ const value: IGameContext = {
 	availableHints: {
 		[HintsType.fiftyAvailable]: false,
 		[HintsType.callAvailable]: false,
-		[HintsType.viewersAvailable]: false
+		[HintsType.viewersAvailable]: false,
 	},
-	changeAvailableHints: ()=>{},
+	changeAvailableHints: () => {},
 	fiftyHint: false,
-	switchFiftyHint: ()=> {},
-	callHint: false,
-	switchCallHint: ()=>{},
+	switchFiftyHint: () => {},
+	callHint: '',
+	switchCallHint: () => {},
 	score: 0,
 	rightAnswer: undefined,
 };
@@ -73,5 +73,5 @@ const value: IGameContext = {
 const GameContext: React.Context<IGameContext> = React.createContext(value);
 GameContext.displayName = 'GameContext';
 
-export { WindowState, ResultGame, GameContext, HintsType};
+export { WindowState, ResultGame, GameContext, HintsType };
 export type { IGameContext, THintsType };

@@ -11,7 +11,7 @@ const StartWindow: React.FC = () => {
 		<div className="start-window container">
 			<div className="start-window__img">
 				<div className="start-window__img-wrapper">
-					<img src={star} alt="star" className='start-window__img-star' />
+					<img src={star} alt="star" className="start-window__img-star" />
 				</div>
 				<img
 					className="start-window__img-logo"

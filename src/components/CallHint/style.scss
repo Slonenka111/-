@@ -1,3 +1,18 @@
+@keyframes flash {
+	0% {
+		opacity: 0;
+	}
+	33% {
+		opacity: 1;
+	}
+	66% {
+		opacity: 0.2;
+	}
+	100% {
+		opacity: 1;
+	}
+}
+
 .call-hint {
 	position: fixed;
 	z-index: 1;
@@ -13,4 +28,5 @@
 	font-size: 20px;
 	border: 3px solid #aaaaaa;
 	background-color: #1d0c1e;
+	animation: flash 1.5s;
 }

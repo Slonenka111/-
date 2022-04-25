@@ -127,8 +127,14 @@ $button-hover-color: #760376;
 		transition: all 0.3s;
 
 		&--test {
-			background: rgb(56,128,32);
-			background: linear-gradient(90deg, rgba(56,128,32,1) 0%, rgba(56,128,32,1) 40%, rgba(29,12,30,1) 40%, rgba(29,12,30,1) 100%) !important;
+			background: rgb(56, 128, 32);
+			background: linear-gradient(
+				90deg,
+				rgba(56, 128, 32, 1) 0%,
+				rgba(56, 128, 32, 1) 40%,
+				rgba(29, 12, 30, 1) 40%,
+				rgba(29, 12, 30, 1) 100%
+			) !important;
 		}
 
 		&--bold {

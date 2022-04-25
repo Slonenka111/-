@@ -1,36 +1,17 @@
-import React, { useContext} from "react";
-import { GameContext } from "../../store/game-context";
-import { getCallHint } from "../questions";
-import "./style.scss";
-
+import React, { useContext, useEffect, useState } from 'react';
+import { GameContext } from '../../store/game-context';
+import { getRandomPhrases } from './phrases';
+import './style.scss';
 
 const CallHint: React.FC = () => {
+	const [answer, setAnswer] = useState('');
+	const { callHint } = useContext(GameContext);
 
-	const {questionId, fiftyHint} = useContext(GameContext)
+	useEffect(() => {
+		setAnswer(getRandomPhrases(callHint));
+	}, [answer]);
 
-	const answer = getCallHint(questionId, fiftyHint)
-	let answerString = 'A';
-
-	switch (answer) {
-		case 1:
-			answerString = 'A'
-			break
-		case 2:
-			answerString = 'B'
-			break
-		case 3:
-			answerString= 'C'
-			break
-		case 4:
-			answerString='D'
-	}
-	console.log(answer, answerString)
-
-	return (
-		<div className="call-hint">
-			{`Хмм... Где-то я уже такое слышал. Я точно не уверен, но это ${answerString}`}
-		</div>
-	);
+	return <div className="call-hint">{answer}</div>;
 };
 
 export { CallHint };
