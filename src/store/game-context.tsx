@@ -28,6 +28,13 @@ type TViewerHint = {
 	[key in TAnswerNumbers]: number;
 };
 
+const defaultViewerHint = {
+	1: 0,
+	2: 0,
+	3: 0,
+	4: 0,
+};
+
 interface IGameContext {
 	windowState: WindowState;
 	resultGame: string;
@@ -74,12 +81,7 @@ const value: IGameContext = {
 	switchFiftyHint: () => {},
 	callHint: '',
 	switchCallHint: () => {},
-	viewerHint: {
-		'1': 0,
-		'2': 0,
-		'3': 0,
-		'4': 0,
-	},
+	viewerHint: defaultViewerHint,
 	switchViewerHint: () => {},
 	score: 0,
 	rightAnswer: undefined,
@@ -88,5 +90,5 @@ const value: IGameContext = {
 const GameContext: React.Context<IGameContext> = React.createContext(value);
 GameContext.displayName = 'GameContext';
 
-export { WindowState, ResultGame, GameContext, HintsType };
+export { WindowState, ResultGame, GameContext, HintsType, defaultViewerHint };
 export type { IGameContext, THintsType, TViewerHint };

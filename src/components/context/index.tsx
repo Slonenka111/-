@@ -8,6 +8,7 @@ import {
 	THintsType,
 	HintsType,
 	TViewerHint,
+	defaultViewerHint,
 } from '../../store/game-context';
 import { getQuestionById, getRandomQuestion, getRightAnswer } from '../questions';
 import { useNavigate } from 'react-router-dom';
@@ -65,12 +66,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 	});
 	const [fiftyHint, setFiftyHint] = useState<boolean>(false);
 	const [callHint, setCallHint] = useState<string>('');
-	const [viewerHint, setViewerHint] = useState<TViewerHint>({
-		1: 0,
-		2: 0,
-		3: 0,
-		4: 0,
-	});
+	const [viewerHint, setViewerHint] = useState<TViewerHint>(defaultViewerHint);
 
 	const navigate = useNavigate();
 
@@ -158,6 +154,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 
 	const gameMove = useCallback(
 		(index, secondsLeft) => {
+			switchViewerHint(defaultViewerHint);
 			// Обработка не верного ответа - проигрыша
 			if (index !== rightAnswer) {
 				console.log('LOSE');

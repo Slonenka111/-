@@ -5,7 +5,7 @@ import {
 	QuestionDifficult,
 	TAnswerNumbers,
 } from '../../data/questions';
-import { TViewerHint } from '../../store/game-context';
+import { defaultViewerHint, TViewerHint } from '../../store/game-context';
 
 type TgetQuestion = [questionText: string, questionVariants: IVariants[], questionId: number];
 
@@ -79,34 +79,46 @@ const getViewerHint = (
 	difficult: QuestionDifficult,
 	fiftyHint: boolean
 ): TViewerHint => {
-	const question = getQuestion(id);
+	const { variants, rightAnswer } = getQuestion(id);
 
-	const [defaultValue, bounceValue] =
+	const [defaultValue, bonusValue] =
 		difficult === QuestionDifficult.easy
 			? [30, 40]
 			: difficult === QuestionDifficult.medium
 			? [45, 10]
 			: [50, 0];
 
-	const result = {
-		1: 0,
-		2: 0,
-		3: 0,
-		4: 0,
-	};
-	const randValue1 = getRandom(defaultValue),
-		randValue2 = getRandom(defaultValue),
-		addValue1 = defaultValue - randValue1,
-		addValue2 = defaultValue - randValue2;
+	const result = defaultViewerHint;
+	const randValue1: number = getRandom(defaultValue),
+		randValue2: number = getRandom(defaultValue),
+		addValue1: number = defaultValue - randValue1,
+		addValue2: number = defaultValue - randValue2;
 
 	if (fiftyHint) {
-		const similarAnswers = question.variants.filter(
-			(variant: IVariants) => variant.fiftyHint && variant.id !== question.rightAnswer
+		const similarAnswers = variants.filter(
+			(variant: IVariants) => variant.fiftyHint && variant.id !== rightAnswer
 		);
 		console.log(similarAnswers);
-		result[question.rightAnswer] = Math.max(randValue1 * 2, addValue1 * 2) + bounceValue;
+		result[rightAnswer] = Math.max(randValue1 * 2, addValue1 * 2) + bonusValue;
 		result[similarAnswers[0].id] = Math.min(randValue1 * 2, addValue1 * 2);
+		return result;
 	}
+
+	const randomValuesArr: number[] = [randValue1, randValue2, addValue1, addValue2];
+	const maxRandomValues = Math.max(...randomValuesArr);
+	result[rightAnswer] = maxRandomValues + bonusValue;
+
+	randomValuesArr.slice(randomValuesArr.indexOf(maxRandomValues), 1);
+
+	for (let key in result) {
+		if ((Number(key) as number) === (rightAnswer as number)) continue;
+		console.log(key);
+
+		// @ts-ignore
+		result[key] = randomValuesArr.pop();
+	}
+
+	console.log(result);
 
 	return result;
 };

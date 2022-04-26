@@ -5,6 +5,7 @@ import {
 	WindowState,
 	HintsType,
 	TViewerHint,
+	defaultViewerHint,
 } from '../../store/game-context';
 import Timer from '../../components/Timer/Timer';
 import { LevelRoadmap } from '../../components/LevelRoadmap/LevelRoadmap';
@@ -63,18 +64,13 @@ const GameWindow: React.FC = () => {
 	useEffect(() => {
 		switchFiftyHint(false);
 		switchCallHint('');
-		switchViewerHint({
-			1: 0,
-			2: 0,
-			3: 0,
-			4: 0,
-		});
+		switchViewerHint(defaultViewerHint);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [questionNumber]);
 
-	useEffect(() => {
-		if (fiftyHint && viewerHint) switchViewerHint(getViewerHint(questionId, difficult, fiftyHint));
-	}, [fiftyHint]);
+	// useEffect(() => {
+	// 	if (fiftyHint && viewerHint !== defaultViewerHint) switchViewerHint(getViewerHint(questionId, difficult, fiftyHint));
+	// }, [fiftyHint, viewerHint]);
 
 	const handleClickAvailableHints = useCallback(
 		(name: HintsType) => {
@@ -120,12 +116,6 @@ const GameWindow: React.FC = () => {
 		setIsDisabled(true);
 		setAnswer(index);
 		setAnswerStatus(AnswerStatuses.Pending);
-		switchViewerHint({
-			1: 0,
-			2: 0,
-			3: 0,
-			4: 0,
-		});
 		setTimeout(() => {
 			index === rightAnswer
 				? setAnswerStatus(AnswerStatuses.Correct)

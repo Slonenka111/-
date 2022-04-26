@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useContext } from 'react';
 import './LevelRoadmap.scss';
 import classNames from 'classnames';
 import { GameContext } from '../../store/game-context';
