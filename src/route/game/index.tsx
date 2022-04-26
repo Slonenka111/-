@@ -19,7 +19,7 @@ import './style.scss';
 
 const SECONDS_TO_ANSWER = 30;
 
-enum AnswerStatuses {
+enum AnswerStatus {
 	NoAnswer = 'no-answer',
 	Pending = 'pending',
 	Wrong = 'wrong',
@@ -30,7 +30,7 @@ const GameWindow: React.FC = () => {
 	const [isDisabled, setIsDisabled] = useState(false);
 	const [isPaused, setPaused] = useState(false);
 	const [answer, setAnswer] = useState<undefined | number>(undefined);
-	const [answerStatus, setAnswerStatus] = useState(AnswerStatuses.NoAnswer);
+	const [answerStatus, setAnswerStatus] = useState(AnswerStatus.NoAnswer);
 	const secondsLeftAfterAnswer = useRef(SECONDS_TO_ANSWER);
 
 	const {
@@ -54,7 +54,7 @@ const GameWindow: React.FC = () => {
 
 	useEffect(() => {
 		return () => {
-			setAnswerStatus(AnswerStatuses.NoAnswer);
+			setAnswerStatus(AnswerStatus.NoAnswer);
 			setAnswer(undefined);
 			setIsDisabled(false);
 			setPaused(false);
@@ -104,22 +104,21 @@ const GameWindow: React.FC = () => {
 		]
 	);
 
-	const getAnswerButtonClassName = (index: number): string => {
+	const getAnswerButtonClassName = (index: number): AnswerStatus => {
 		if (index === answer) return answerStatus;
-		if (answerStatus === AnswerStatuses.Wrong && index === rightAnswer)
-			return AnswerStatuses.Correct;
-		return 'basic';
+		if (answerStatus === AnswerStatus.Wrong && index === rightAnswer) return AnswerStatus.Correct;
+		return AnswerStatus.NoAnswer;
 	};
 
 	const handleClick = (index: number) => {
 		setPaused(true);
 		setIsDisabled(true);
 		setAnswer(index);
-		setAnswerStatus(AnswerStatuses.Pending);
+		setAnswerStatus(AnswerStatus.Pending);
 		setTimeout(() => {
 			index === rightAnswer
-				? setAnswerStatus(AnswerStatuses.Correct)
-				: setAnswerStatus(AnswerStatuses.Wrong);
+				? setAnswerStatus(AnswerStatus.Correct)
+				: setAnswerStatus(AnswerStatus.Wrong);
 			setTimeout(() => {
 				gameMove(index, secondsLeftAfterAnswer.current);
 			}, 3000);
@@ -129,13 +128,24 @@ const GameWindow: React.FC = () => {
 	const handleTimeExpiration = useCallback(() => {
 		setIsDisabled(true);
 		setTimeout(() => {
-			setAnswerStatus(AnswerStatuses.Wrong);
+			setAnswerStatus(AnswerStatus.Wrong);
 			setTimeout(() => {
 				switchWindow(WindowState.end);
 				setResultGame(ResultGame.expired);
 			}, 3000);
 		}, 2000);
 	}, [setResultGame, switchWindow]);
+
+	const getButtonsContainerProps = (questionVariants: IVariants[]): ButtonsContainerProps => {
+		return {
+			getAnswerButtonClassName,
+			isDisabled,
+			onButtonClick: handleClick,
+			questionVariants: questionVariants,
+			fiftyHint: fiftyHint,
+			viewerHint: viewerHint,
+		};
+	};
 
 	return (
 		<div className="game-window container">
@@ -164,26 +174,8 @@ const GameWindow: React.FC = () => {
 					</div>
 				</div>
 				<div className="question__container button__container button__container--multiple">
-					<ButtonsContainer
-						{...{
-							getAnswerButtonClassName,
-							isDisabled,
-							onButtonClick: handleClick,
-							questionVariants: questionVariants.slice(0, 2),
-							fiftyHint: fiftyHint,
-							viewerHint: viewerHint,
-						}}
-					/>
-					<ButtonsContainer
-						{...{
-							getAnswerButtonClassName,
-							isDisabled,
-							onButtonClick: handleClick,
-							questionVariants: questionVariants.slice(2),
-							fiftyHint: fiftyHint,
-							viewerHint: viewerHint,
-						}}
-					/>
+					<ButtonsContainer {...getButtonsContainerProps(questionVariants.slice(0, 2))} />
+					<ButtonsContainer {...getButtonsContainerProps(questionVariants.slice(2))} />
 				</div>
 			</div>
 		</div>
@@ -209,14 +201,14 @@ const ButtonsContainer: React.FC<ButtonsContainerProps> = (props) => {
 		viewerHint,
 	} = props;
 	const variantIdToLabel = Object.freeze({ 1: 'A', 2: 'B', 3: 'C', 4: 'D' });
-
 	return (
 		<div className="button__container-item">
 			{questionVariants.map((variant) => (
 				<div
 					className={classNames('button__wrapper', {
 						disabled: isDisabled,
-						'disable-fogging': isDisabled && getAnswerButtonClassName(variant.id) === 'basic',
+						'disable-fogging':
+							isDisabled && getAnswerButtonClassName(variant.id) === AnswerStatus.NoAnswer,
 					})}
 					key={variant.id}
 				>
@@ -228,7 +220,8 @@ const ButtonsContainer: React.FC<ButtonsContainerProps> = (props) => {
 							getAnswerButtonClassName(variant.id),
 							{
 								disabled: isDisabled,
-								'disable-fogging': isDisabled && getAnswerButtonClassName(variant.id) === 'basic',
+								'disable-fogging':
+									isDisabled && getAnswerButtonClassName(variant.id) === AnswerStatus.NoAnswer,
 							}
 						)}
 						disabled={isDisabled || (fiftyHint && !variant.fiftyHint)}
