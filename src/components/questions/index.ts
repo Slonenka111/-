@@ -88,7 +88,7 @@ const getViewerHint = (
 			? [45, 10]
 			: [50, 0];
 
-	const result = defaultViewerHint;
+	const result = { ...defaultViewerHint };
 	const randValue1: number = getRandom(defaultValue),
 		randValue2: number = getRandom(defaultValue),
 		addValue1: number = defaultValue - randValue1,
@@ -98,7 +98,6 @@ const getViewerHint = (
 		const similarAnswers = variants.filter(
 			(variant: IVariants) => variant.fiftyHint && variant.id !== rightAnswer
 		);
-		console.log(similarAnswers);
 		result[rightAnswer] = Math.max(randValue1 * 2, addValue1 * 2) + bonusValue;
 		result[similarAnswers[0].id] = Math.min(randValue1 * 2, addValue1 * 2);
 		return result;
@@ -112,13 +111,9 @@ const getViewerHint = (
 
 	for (let key in result) {
 		if ((Number(key) as number) === (rightAnswer as number)) continue;
-		console.log(key);
 
-		// @ts-ignore
-		result[key] = randomValuesArr.pop();
+		result[Number(key) as TAnswerNumbers] = <number>randomValuesArr.pop();
 	}
-
-	console.log(result);
 
 	return result;
 };

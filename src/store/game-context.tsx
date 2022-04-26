@@ -28,12 +28,18 @@ type TViewerHint = {
 	[key in TAnswerNumbers]: number;
 };
 
-const defaultViewerHint = {
+const defaultAvailableHint: THintsType = Object.freeze({
+	[HintsType.fiftyAvailable]: false,
+	[HintsType.callAvailable]: false,
+	[HintsType.viewersAvailable]: false,
+});
+
+const defaultViewerHint: TViewerHint = Object.freeze({
 	1: 0,
 	2: 0,
 	3: 0,
 	4: 0,
-};
+});
 
 interface IGameContext {
 	windowState: WindowState;
@@ -71,11 +77,7 @@ const value: IGameContext = {
 	questionId: 0,
 	gameMove: () => {},
 	clearStates: () => {},
-	availableHints: {
-		[HintsType.fiftyAvailable]: false,
-		[HintsType.callAvailable]: false,
-		[HintsType.viewersAvailable]: false,
-	},
+	availableHints: defaultAvailableHint,
 	changeAvailableHints: () => {},
 	fiftyHint: false,
 	switchFiftyHint: () => {},
@@ -90,5 +92,5 @@ const value: IGameContext = {
 const GameContext: React.Context<IGameContext> = React.createContext(value);
 GameContext.displayName = 'GameContext';
 
-export { WindowState, ResultGame, GameContext, HintsType, defaultViewerHint };
+export { WindowState, ResultGame, GameContext, HintsType, defaultAvailableHint, defaultViewerHint };
 export type { IGameContext, THintsType, TViewerHint };

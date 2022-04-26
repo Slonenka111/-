@@ -64,13 +64,7 @@ const GameWindow: React.FC = () => {
 	useEffect(() => {
 		switchFiftyHint(false);
 		switchCallHint('');
-		switchViewerHint(defaultViewerHint);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [questionNumber]);
-
-	// useEffect(() => {
-	// 	if (fiftyHint && viewerHint !== defaultViewerHint) switchViewerHint(getViewerHint(questionId, difficult, fiftyHint));
-	// }, [fiftyHint, viewerHint]);
+	}, [questionNumber, switchCallHint, switchFiftyHint]);
 
 	const handleClickAvailableHints = useCallback(
 		(name: HintsType) => {
@@ -115,6 +109,7 @@ const GameWindow: React.FC = () => {
 		setIsDisabled(true);
 		setAnswer(index);
 		setAnswerStatus(AnswerStatus.Pending);
+		switchViewerHint(defaultViewerHint);
 		setTimeout(() => {
 			index === rightAnswer
 				? setAnswerStatus(AnswerStatus.Correct)
@@ -127,6 +122,7 @@ const GameWindow: React.FC = () => {
 
 	const handleTimeExpiration = useCallback(() => {
 		setIsDisabled(true);
+		switchViewerHint(defaultViewerHint);
 		setTimeout(() => {
 			setAnswerStatus(AnswerStatus.Wrong);
 			setTimeout(() => {
@@ -152,7 +148,7 @@ const GameWindow: React.FC = () => {
 			{callHint && <CallHint />}
 			<div className="game-window__header">
 				<div className="game-window__header--side">
-					<Hints handleClick={handleClickAvailableHints} />
+					<Hints handleClick={handleClickAvailableHints} isDisabled={isDisabled} />
 				</div>
 				<div className="game-window__header--middle">
 					<Timer

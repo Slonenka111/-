@@ -9,6 +9,7 @@ import {
 	HintsType,
 	TViewerHint,
 	defaultViewerHint,
+	defaultAvailableHint,
 } from '../../store/game-context';
 import { getQuestionById, getRandomQuestion, getRightAnswer } from '../questions';
 import { useNavigate } from 'react-router-dom';
@@ -59,11 +60,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 	});
 	const [score, setScore] = useState(0);
 	const [rightAnswer, setRightAnswer] = useState<undefined | number>(undefined);
-	const [availableHints, setAvailableHints] = useState<THintsType>({
-		[HintsType.fiftyAvailable]: false,
-		[HintsType.callAvailable]: false,
-		[HintsType.viewersAvailable]: false,
-	});
+	const [availableHints, setAvailableHints] = useState<THintsType>(defaultAvailableHint);
 	const [fiftyHint, setFiftyHint] = useState<boolean>(false);
 	const [callHint, setCallHint] = useState<string>('');
 	const [viewerHint, setViewerHint] = useState<TViewerHint>(defaultViewerHint);
@@ -146,6 +143,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 		availableHints,
 		fiftyHint,
 		callHint,
+		viewerHint,
 	]);
 
 	useEffect(() => {
@@ -154,10 +152,8 @@ const GameContextWrapper: React.FC = ({ children }) => {
 
 	const gameMove = useCallback(
 		(index, secondsLeft) => {
-			switchViewerHint(defaultViewerHint);
 			// Обработка не верного ответа - проигрыша
 			if (index !== rightAnswer) {
-				console.log('LOSE');
 				switchWindow(WindowState.end);
 				setResultGame(ResultGame.lose);
 				return;
@@ -167,7 +163,6 @@ const GameContextWrapper: React.FC = ({ children }) => {
 
 			// Обработка верного ответа на 15-й вопрос - победа
 			if (questionNumber === 14) {
-				console.log('WIN');
 				switchWindow(WindowState.end);
 				setResultGame(ResultGame.win);
 				return;
@@ -196,11 +191,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 		setDifficult(QuestionDifficult.easy);
 		setQuestion(getRandomQuestion(QuestionDifficult.easy, passQuestions));
 		setScore(0);
-		setAvailableHints({
-			[HintsType.fiftyAvailable]: false,
-			[HintsType.callAvailable]: false,
-			[HintsType.viewersAvailable]: false,
-		});
+		setAvailableHints(defaultAvailableHint);
 	}, [switchWindow]);
 
 	const changeAvailableHints = useCallback((name: HintsType) => {

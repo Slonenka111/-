@@ -4,36 +4,39 @@ import fiftyIcon from '../../assets/icon/fifty-icon.svg';
 import phoneIcon from '../../assets/icon/phone-icon.svg';
 import viewersIcon from '../../assets/icon/viewers-icon.svg';
 import { GameContext, HintsType } from '../../store/game-context';
+import classNames from 'classnames';
 
 interface IHintProps {
 	handleClick: (name: HintsType) => void;
+	isDisabled: boolean;
 }
 
 const Hints: React.FC<IHintProps> = (props) => {
 	const { availableHints } = useContext(GameContext);
 
-	const { handleClick } = props;
+	const { handleClick, isDisabled } = props;
 
 	return (
 		<div className="hints">
-			<button
-				className="hints__item hints--call"
-				style={{ background: `center / cover no-repeat url(${fiftyIcon})` }}
-				onClick={() => handleClick(HintsType.fiftyAvailable)}
-				disabled={availableHints.fiftyAvailable}
-			/>
-			<button
-				className="hints__item hints--call"
-				style={{ background: ` center / contain no-repeat url(${phoneIcon})` }}
-				onClick={() => handleClick(HintsType.callAvailable)}
-				disabled={availableHints.callAvailable}
-			/>
-			<button
-				className="hints__item hints--call"
-				style={{ background: `center / contain no-repeat url(${viewersIcon})` }}
-				onClick={() => handleClick(HintsType.viewersAvailable)}
-				disabled={availableHints.viewersAvailable}
-			/>
+			{Object.keys(availableHints).map((item: string, i: number) => {
+				const icon =
+					(item as HintsType) === HintsType.fiftyAvailable
+						? fiftyIcon
+						: (item as HintsType) === HintsType.callAvailable
+						? phoneIcon
+						: viewersIcon;
+				return (
+					<button
+						key={i}
+						className={classNames('hints__item', 'hints--call hints__item', {
+							'hints__item--used': availableHints[item as HintsType],
+						})}
+						style={{ background: `center / contain no-repeat url(${icon})` }}
+						onClick={() => handleClick(HintsType[item as HintsType])}
+						disabled={isDisabled || availableHints[item as HintsType]}
+					/>
+				);
+			})}
 		</div>
 	);
 };
