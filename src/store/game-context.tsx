@@ -57,10 +57,10 @@ interface IGameContext {
 	changeAvailableHints: (name: HintsType) => void;
 	fiftyHint: boolean;
 	switchFiftyHint: (status: boolean) => void;
-	callHint: string;
-	switchCallHint: (status: string) => void;
-	viewerHint: TViewerHint;
-	switchViewerHint: (status: TViewerHint) => void;
+	callHint: string | undefined;
+	switchCallHint: (status: string | undefined) => void;
+	viewerHint: TViewerHint | undefined;
+	switchViewerHint: (status: TViewerHint | undefined) => void;
 	score: number;
 	rightAnswer: number | undefined;
 }

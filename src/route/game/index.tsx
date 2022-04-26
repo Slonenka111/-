@@ -9,7 +9,7 @@ import {
 } from '../../store/game-context';
 import Timer from '../../components/Timer/Timer';
 import { LevelRoadmap } from '../../components/LevelRoadmap/LevelRoadmap';
-import { getCallHint, getViewerHint } from '../../components/questions';
+import { getCallHint, getViewerHint, VARIANT_ID_TO_LABEL } from '../../components/questions';
 import { Hints } from '../../components/Hints';
 import { CallHint } from '../../components/CallHint';
 import { IVariants } from '../../data/questions';
@@ -78,12 +78,11 @@ const GameWindow: React.FC = () => {
 				case HintsType.viewersAvailable:
 					setPaused(true);
 					switchViewerHint(getViewerHint(questionId, difficult, fiftyHint));
-					setTimeout(() => {
-						setPaused(false);
-					}, 2000);
+					setTimeout(setPaused, 2000, false);
 					break;
 				default:
 					console.error('Получен неизвестный тип подсказки');
+					return;
 			}
 			changeAvailableHints(name);
 		},
@@ -130,7 +129,7 @@ const GameWindow: React.FC = () => {
 				setResultGame(ResultGame.expired);
 			}, 3000);
 		}, 2000);
-	}, [setResultGame, switchWindow]);
+	}, [setResultGame, switchViewerHint, switchWindow]);
 
 	const getButtonsContainerProps = (questionVariants: IVariants[]): ButtonsContainerProps => {
 		return {
@@ -184,7 +183,7 @@ interface ButtonsContainerProps {
 	getAnswerButtonClassName: (variantId: number) => string;
 	onButtonClick: (variantId: number) => void;
 	fiftyHint: boolean;
-	viewerHint: TViewerHint;
+	viewerHint: TViewerHint | undefined;
 }
 
 const ButtonsContainer: React.FC<ButtonsContainerProps> = (props) => {
@@ -194,47 +193,50 @@ const ButtonsContainer: React.FC<ButtonsContainerProps> = (props) => {
 		getAnswerButtonClassName,
 		onButtonClick,
 		fiftyHint,
-		viewerHint,
+		viewerHint = defaultViewerHint,
 	} = props;
-	const variantIdToLabel = Object.freeze({ 1: 'A', 2: 'B', 3: 'C', 4: 'D' });
 	return (
 		<div className="button__container-item">
-			{questionVariants.map((variant) => (
-				<div
-					className={classNames('button__wrapper', {
-						disabled: isDisabled,
-						'disable-fogging':
-							isDisabled && getAnswerButtonClassName(variant.id) === AnswerStatus.NoAnswer,
-					})}
-					key={variant.id}
-				>
-					<button
-						className={classNames(
-							'button__item',
-							'button__item--viewers-result',
-							'question__btn',
-							getAnswerButtonClassName(variant.id),
-							{
-								disabled: isDisabled,
-								'disable-fogging':
-									isDisabled && getAnswerButtonClassName(variant.id) === AnswerStatus.NoAnswer,
-							}
-						)}
-						disabled={isDisabled || (fiftyHint && !variant.fiftyHint)}
-						onClick={() => onButtonClick(variant.id)}
-						style={{
-							'--viewers-vote': !(fiftyHint && !variant.fiftyHint) ? viewerHint[variant.id] : 0,
-						}}
+			{questionVariants.map((variant) => {
+				const hintProps = fiftyHint && !variant.fiftyHint;
+
+				return (
+					<div
+						className={classNames('button__wrapper', {
+							disabled: isDisabled,
+							'disable-fogging':
+								isDisabled && getAnswerButtonClassName(variant.id) === AnswerStatus.NoAnswer,
+						})}
+						key={variant.id}
 					>
-						{(!fiftyHint || variant.fiftyHint) && (
-							<>
-								<span className="text--primary">{`${variantIdToLabel[variant.id]}: `}</span>
-								{variant.text}
-							</>
-						)}
-					</button>
-				</div>
-			))}
+						<button
+							className={classNames(
+								'button__item',
+								'button__item--viewers-result',
+								'question__btn',
+								getAnswerButtonClassName(variant.id),
+								{
+									disabled: isDisabled,
+									'disable-fogging':
+										isDisabled && getAnswerButtonClassName(variant.id) === AnswerStatus.NoAnswer,
+								}
+							)}
+							disabled={isDisabled || hintProps}
+							onClick={() => onButtonClick(variant.id)}
+							style={{
+								'--viewers-vote': !hintProps ? viewerHint[variant.id] : 0,
+							}}
+						>
+							{!hintProps && (
+								<>
+									<span className="text--primary">{`${VARIANT_ID_TO_LABEL[variant.id]}: `}</span>
+									{variant.text}
+								</>
+							)}
+						</button>
+					</div>
+				);
+			})}
 		</div>
 	);
 };

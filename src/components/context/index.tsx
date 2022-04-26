@@ -1,15 +1,15 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { QuestionDifficult } from '../../data/questions';
 import {
+	defaultAvailableHint,
+	defaultViewerHint,
 	GameContext,
+	HintsType,
 	IGameContext,
-	WindowState,
 	ResultGame,
 	THintsType,
-	HintsType,
 	TViewerHint,
-	defaultViewerHint,
-	defaultAvailableHint,
+	WindowState,
 } from '../../store/game-context';
 import { getQuestionById, getRandomQuestion, getRightAnswer } from '../questions';
 import { useNavigate } from 'react-router-dom';
@@ -26,8 +26,8 @@ const createGameStateString = (
 	score: number,
 	availableHints: THintsType,
 	fiftyHint: boolean,
-	callHint: string,
-	viewerHint: TViewerHint
+	callHint: string | undefined,
+	viewerHint: TViewerHint | undefined
 ): string | undefined => {
 	const gameState = {
 		windowState: windowState,
@@ -62,8 +62,8 @@ const GameContextWrapper: React.FC = ({ children }) => {
 	const [rightAnswer, setRightAnswer] = useState<undefined | number>(undefined);
 	const [availableHints, setAvailableHints] = useState<THintsType>(defaultAvailableHint);
 	const [fiftyHint, setFiftyHint] = useState<boolean>(false);
-	const [callHint, setCallHint] = useState<string>('');
-	const [viewerHint, setViewerHint] = useState<TViewerHint>(defaultViewerHint);
+	const [callHint, setCallHint] = useState<string | undefined>('');
+	const [viewerHint, setViewerHint] = useState<TViewerHint | undefined>(defaultViewerHint);
 
 	const navigate = useNavigate();
 
@@ -202,11 +202,19 @@ const GameContextWrapper: React.FC = ({ children }) => {
 		setFiftyHint(status);
 	}, []);
 
-	const switchCallHint = useCallback((status: string) => {
+	const switchCallHint = useCallback((status: string | undefined) => {
+		if (status === undefined) {
+			console.error('Не корректная подсказка звонка');
+			return;
+		}
 		setCallHint(status);
 	}, []);
 
-	const switchViewerHint = useCallback((status: TViewerHint) => {
+	const switchViewerHint = useCallback((status: TViewerHint | undefined) => {
+		if (status === undefined) {
+			console.error('Не корректная подсказка зрителей');
+			return;
+		}
 		setViewerHint(status);
 	}, []);
 

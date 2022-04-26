@@ -18,7 +18,7 @@ const Hints: React.FC<IHintProps> = (props) => {
 
 	return (
 		<div className="hints">
-			{Object.keys(availableHints).map((item: string, i: number) => {
+			{Object.keys(availableHints).map((item: string) => {
 				const icon =
 					(item as HintsType) === HintsType.fiftyAvailable
 						? fiftyIcon
@@ -27,7 +27,7 @@ const Hints: React.FC<IHintProps> = (props) => {
 						: viewersIcon;
 				return (
 					<button
-						key={i}
+						key={item}
 						className={classNames('hints__item', 'hints--call hints__item', {
 							'hints__item--used': availableHints[item as HintsType],
 						})}

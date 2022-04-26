@@ -7,13 +7,18 @@ const phrases = [
 	'Есть у меня один друг, он говорит, что это %, но я бы ему не доверял.',
 	'Ну у тебя и вопросы! Я не знаю.',
 	'Отвечай, что тут %, и пойдем скорее в бар!',
+	'Я на 100 процентов уверен, что это %',
 ];
 
 const getRandom = (number: number = 1): number => {
 	return Math.floor(Math.random() * number);
 };
 
-const getRandomPhrases = (insertStr: string): string => {
+const getRandomPhrases = (insertStr: string | undefined): string => {
+	if (insertStr === undefined) {
+		return '';
+	}
+
 	return phrases[getRandom(phrases.length)].replace('%', insertStr);
 };
 
