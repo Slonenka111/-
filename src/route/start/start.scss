@@ -56,75 +56,23 @@ $subColor: rgba(255, 255, 255, 1);
 			left: 50%;
 			transform: translate(-50%, -50%);
 			width: 100%;
-			max-width: 290px;
+			max-width: 320px;
 		}
 
-		&-line {
+		&-star {
 			position: absolute;
-			top: 30px;
-			left: calc(50% - 10px);
-			width: 0;
-			height: 0;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			width: 100%;
+			max-width: 350px;
+			filter: drop-shadow(2px 2px 10px rgba(220, 220, 220, 0.8))
+				drop-shadow(-2px -2px 10px rgba(220, 220, 220, 0.8))
+				drop-shadow(0px 0px 6px rgba(220, 220, 220, 0.8))
+				drop-shadow(0px 0px 2px rgba(220, 220, 220, 0.8)) blur(1px);
 
-			border: 10px solid transparent;
-			border-bottom: 160px solid $subColor;
-
-			&:after {
-				content: '';
-				width: 0;
-				height: 0;
-				position: absolute;
-				left: -10px;
-				top: 160px;
-
-				border: 10px solid transparent;
-				border-top: 160px solid $subColor;
-			}
-
-			&:nth-child(2) {
-				transform: rotate(30deg);
-				top: 10%;
-				left: 58%;
-
-				@media (max-width: 375px) {
-					left: 60%;
-				}
-			}
-
-			&:nth-child(3) {
-				transform: rotate(60deg);
-				top: 18%;
-				left: 66%;
-
-				@media (max-width: 375px) {
-					left: 69%;
-				}
-			}
-
-			&:nth-child(4) {
-				transform: rotate(90deg);
-				top: 29%;
-				left: 69%;
-
-				@media (max-width: 375px) {
-					left: 72%;
-				}
-			}
-
-			&:nth-child(5) {
-				transform: rotate(120deg);
-				top: 39%;
-				left: 66%;
-
-				@media (max-width: 375px) {
-					left: 68%;
-				}
-			}
-
-			&:nth-child(6) {
-				transform: rotate(150deg);
-				top: 47%;
-				left: 60%;
+			@media (max-width: 768px) {
+				width: 90%;
 			}
 		}
 	}

@@ -1,10 +1,24 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { QuestionDifficult } from '../../data/questions';
-import { GameContext, IGameContext, WindowState, ResultGame } from '../../store/game-context';
+import {
+	defaultAvailableHint,
+	defaultViewerHint,
+	GameContext,
+	HintsType,
+	IGameContext,
+	ResultGame,
+	THintsType,
+	TViewerHint,
+	WindowState,
+} from '../../store/game-context';
 import { getQuestionById, getRandomQuestion, getRightAnswer } from '../questions';
 import { useNavigate } from 'react-router-dom';
 
 let passQuestions: number[] = [];
+
+const LOCAL_STORAGE_KEY = {
+	GAME_STATE: 'GameState',
+};
 
 const createGameStateString = (
 	windowState: WindowState,
@@ -13,7 +27,11 @@ const createGameStateString = (
 	difficult: QuestionDifficult,
 	passQuestions: number[],
 	questionId: number,
-	score: number
+	score: number,
+	availableHints: THintsType,
+	fiftyHint: boolean,
+	callHint: string | undefined,
+	viewerHint: TViewerHint | undefined
 ): string | undefined => {
 	const gameState = {
 		windowState: windowState,
@@ -23,6 +41,10 @@ const createGameStateString = (
 		passQuestions: passQuestions,
 		questionId: questionId,
 		score: score,
+		availableHints: availableHints,
+		fiftyHint: fiftyHint,
+		callHint: callHint,
+		viewerHint: viewerHint,
 	};
 
 	try {
@@ -42,6 +64,10 @@ const GameContextWrapper: React.FC = ({ children }) => {
 	});
 	const [score, setScore] = useState(0);
 	const [rightAnswer, setRightAnswer] = useState<undefined | number>(undefined);
+	const [availableHints, setAvailableHints] = useState<THintsType>(defaultAvailableHint);
+	const [fiftyHint, setFiftyHint] = useState<boolean>(false);
+	const [callHint, setCallHint] = useState<string | undefined>('');
+	const [viewerHint, setViewerHint] = useState<TViewerHint | undefined>(defaultViewerHint);
 
 	const navigate = useNavigate();
 
@@ -58,7 +84,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 		let gameState;
 
 		try {
-			gameState = JSON.parse(localStorage.getItem('GameState') as string);
+			gameState = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY.GAME_STATE) as string);
 		} catch (e) {
 			console.error(e);
 		}
@@ -71,9 +97,17 @@ const GameContextWrapper: React.FC = ({ children }) => {
 				difficult,
 				passQuestions,
 				questionId,
-				score
+				score,
+				availableHints,
+				fiftyHint,
+				callHint,
+				viewerHint
 			);
-			if (newGameState) localStorage.setItem('GameState', newGameState);
+
+			if (newGameState) {
+				localStorage.setItem(LOCAL_STORAGE_KEY.GAME_STATE, newGameState);
+			}
+
 			switchWindow(WindowState.start);
 		} else {
 			switchWindow(gameState.windowState);
@@ -83,7 +117,12 @@ const GameContextWrapper: React.FC = ({ children }) => {
 			passQuestions = gameState.passQuestions;
 			setQuestion(getQuestionById(gameState.questionId));
 			setScore(gameState.score);
+			setAvailableHints(gameState.availableHints);
+			setFiftyHint(gameState.fiftyHint);
+			setCallHint(gameState.callHint);
+			setViewerHint(gameState.viewerHint);
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	// Логика для игры
@@ -95,10 +134,27 @@ const GameContextWrapper: React.FC = ({ children }) => {
 			difficult,
 			passQuestions,
 			questionId,
-			score
+			score,
+			availableHints,
+			fiftyHint,
+			callHint,
+			viewerHint
 		);
-		if (newGameState) localStorage.setItem('GameState', newGameState);
-	}, [windowState, resultGame, questionNumber, difficult, questionId, score]);
+		if (newGameState) {
+			localStorage.setItem(LOCAL_STORAGE_KEY.GAME_STATE, newGameState);
+		}
+	}, [
+		windowState,
+		resultGame,
+		questionNumber,
+		difficult,
+		questionId,
+		score,
+		availableHints,
+		fiftyHint,
+		callHint,
+		viewerHint,
+	]);
 
 	useEffect(() => {
 		setRightAnswer(getRightAnswer(questionId));
@@ -108,7 +164,6 @@ const GameContextWrapper: React.FC = ({ children }) => {
 		(index, secondsLeft) => {
 			// Обработка не верного ответа - проигрыша
 			if (index !== rightAnswer) {
-				console.log('LOSE');
 				switchWindow(WindowState.end);
 				setResultGame(ResultGame.lose);
 				return;
@@ -118,7 +173,6 @@ const GameContextWrapper: React.FC = ({ children }) => {
 
 			// Обработка верного ответа на 15-й вопрос - победа
 			if (questionNumber === 14) {
-				console.log('WIN');
 				switchWindow(WindowState.end);
 				setResultGame(ResultGame.win);
 				return;
@@ -147,13 +201,39 @@ const GameContextWrapper: React.FC = ({ children }) => {
 		setDifficult(QuestionDifficult.easy);
 		setQuestion(getRandomQuestion(QuestionDifficult.easy, passQuestions));
 		setScore(0);
+		setAvailableHints(defaultAvailableHint);
 	}, [switchWindow]);
+
+	const changeAvailableHints = useCallback((name: HintsType) => {
+		setAvailableHints((prevState) => ({ ...prevState, [name]: true }));
+	}, []);
+
+	const switchFiftyHint = useCallback((status: boolean) => {
+		setFiftyHint(status);
+	}, []);
+
+	const switchCallHint = useCallback((status: string | undefined) => {
+		if (status === undefined) {
+			console.error('Не корректная подсказка звонка');
+			return;
+		}
+		setCallHint(status);
+	}, []);
+
+	const switchViewerHint = useCallback((status: TViewerHint | undefined) => {
+		if (status === undefined) {
+			console.error('Не корректная подсказка зрителей');
+			return;
+		}
+		setViewerHint(status);
+	}, []);
 
 	const value = useMemo<IGameContext>(
 		() => ({
 			windowState,
 			resultGame,
 			switchWindow,
+			difficult,
 			setResultGame,
 			questionNumber,
 			questionText,
@@ -162,12 +242,21 @@ const GameContextWrapper: React.FC = ({ children }) => {
 			gameMove,
 			score,
 			clearStates,
+			availableHints,
+			changeAvailableHints,
+			fiftyHint,
+			switchFiftyHint,
+			callHint,
+			switchCallHint,
+			viewerHint,
+			switchViewerHint,
 			rightAnswer,
 		}),
 		[
 			windowState,
 			resultGame,
 			switchWindow,
+			difficult,
 			setResultGame,
 			questionNumber,
 			questionText,
@@ -176,6 +265,14 @@ const GameContextWrapper: React.FC = ({ children }) => {
 			gameMove,
 			score,
 			clearStates,
+			availableHints,
+			changeAvailableHints,
+			fiftyHint,
+			switchFiftyHint,
+			callHint,
+			switchCallHint,
+			viewerHint,
+			switchViewerHint,
 			rightAnswer,
 		]
 	);

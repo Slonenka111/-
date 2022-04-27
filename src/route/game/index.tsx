@@ -1,11 +1,21 @@
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
-import '../../components/questions/style.scss';
-import { GameContext, ResultGame, WindowState } from '../../store/game-context';
+import {
+	GameContext,
+	ResultGame,
+	WindowState,
+	HintsType,
+	TViewerHint,
+	defaultViewerHint,
+} from '../../store/game-context';
 import Timer from '../../components/Timer/Timer';
 import { LevelRoadmap } from '../../components/LevelRoadmap/LevelRoadmap';
-import './style.scss';
-import classNames from 'classnames';
+import { getCallHint, getViewerHint, VARIANT_ID_TO_LABEL } from '../../components/questions';
+import { Hints } from '../../components/Hints';
+import { CallHint } from '../../components/CallHint';
 import { IVariants } from '../../data/questions';
+import classNames from 'classnames';
+import '../../components/questions/style.scss';
+import './style.scss';
 
 const SECONDS_TO_ANSWER = 30;
 
@@ -27,11 +37,19 @@ const GameWindow: React.FC = () => {
 		questionNumber,
 		questionText,
 		questionVariants,
+		difficult,
 		gameMove,
 		switchWindow,
 		setResultGame,
 		questionId,
 		rightAnswer,
+		changeAvailableHints,
+		fiftyHint,
+		switchFiftyHint,
+		callHint,
+		switchCallHint,
+		viewerHint,
+		switchViewerHint,
 	} = useContext(GameContext);
 
 	useEffect(() => {
@@ -42,6 +60,42 @@ const GameWindow: React.FC = () => {
 			setPaused(false);
 		};
 	}, [questionId]);
+
+	useEffect(() => {
+		switchFiftyHint(false);
+		switchCallHint('');
+	}, [questionNumber, switchCallHint, switchFiftyHint]);
+
+	const handleClickAvailableHints = useCallback(
+		(name: HintsType) => {
+			switch (name as HintsType) {
+				case HintsType.fiftyAvailable:
+					switchFiftyHint(true);
+					break;
+				case HintsType.callAvailable:
+					switchCallHint(getCallHint(questionId, fiftyHint));
+					break;
+				case HintsType.viewersAvailable:
+					setPaused(true);
+					switchViewerHint(getViewerHint(questionId, difficult, fiftyHint));
+					setTimeout(setPaused, 2000, false);
+					break;
+				default:
+					console.error('Получен неизвестный тип подсказки');
+					return;
+			}
+			changeAvailableHints(name);
+		},
+		[
+			changeAvailableHints,
+			difficult,
+			fiftyHint,
+			questionId,
+			switchCallHint,
+			switchFiftyHint,
+			switchViewerHint,
+		]
+	);
 
 	const getAnswerButtonClassName = (index: number): AnswerStatus => {
 		if (index === answer) return answerStatus;
@@ -54,6 +108,7 @@ const GameWindow: React.FC = () => {
 		setIsDisabled(true);
 		setAnswer(index);
 		setAnswerStatus(AnswerStatus.Pending);
+		switchViewerHint(defaultViewerHint);
 		setTimeout(() => {
 			index === rightAnswer
 				? setAnswerStatus(AnswerStatus.Correct)
@@ -66,6 +121,7 @@ const GameWindow: React.FC = () => {
 
 	const handleTimeExpiration = useCallback(() => {
 		setIsDisabled(true);
+		switchViewerHint(defaultViewerHint);
 		setTimeout(() => {
 			setAnswerStatus(AnswerStatus.Wrong);
 			setTimeout(() => {
@@ -73,7 +129,7 @@ const GameWindow: React.FC = () => {
 				setResultGame(ResultGame.expired);
 			}, 3000);
 		}, 2000);
-	}, [setResultGame, switchWindow]);
+	}, [setResultGame, switchViewerHint, switchWindow]);
 
 	const getButtonsContainerProps = (questionVariants: IVariants[]): ButtonsContainerProps => {
 		return {
@@ -81,14 +137,17 @@ const GameWindow: React.FC = () => {
 			isDisabled,
 			onButtonClick: handleClick,
 			questionVariants: questionVariants,
+			fiftyHint: fiftyHint,
+			viewerHint: viewerHint,
 		};
 	};
 
 	return (
 		<div className="game-window container">
+			{callHint && <CallHint />}
 			<div className="game-window__header">
 				<div className="game-window__header--side">
-					<div>Тут подсказки Тут подсказки Тут подсказки Тут подсказки</div>
+					<Hints handleClick={handleClickAvailableHints} isDisabled={isDisabled} />
 				</div>
 				<div className="game-window__header--middle">
 					<Timer
@@ -123,43 +182,63 @@ interface ButtonsContainerProps {
 	isDisabled: boolean;
 	getAnswerButtonClassName: (variantId: number) => string;
 	onButtonClick: (variantId: number) => void;
+	fiftyHint: boolean;
+	viewerHint: TViewerHint | undefined;
 }
 
 const ButtonsContainer: React.FC<ButtonsContainerProps> = (props) => {
-	const { questionVariants, isDisabled, getAnswerButtonClassName, onButtonClick } = props;
-	const variantIdToLabel = { 1: 'A', 2: 'B', 3: 'C', 4: 'D' };
+	const {
+		questionVariants,
+		isDisabled,
+		getAnswerButtonClassName,
+		onButtonClick,
+		fiftyHint,
+		viewerHint = defaultViewerHint,
+	} = props;
 	return (
 		<div className="button__container-item">
-			{questionVariants.map((variant) => (
-				<div
-					className={classNames('button__wrapper', {
-						disabled: isDisabled,
-						'disable-fogging':
-							isDisabled && getAnswerButtonClassName(variant.id) === AnswerStatus.NoAnswer,
-					})}
-					key={variant.id}
-				>
-					<button
-						className={classNames(
-							'button__item',
-							'question__btn',
-							getAnswerButtonClassName(variant.id),
-							{
-								disabled: isDisabled,
-								'disable-fogging':
-									isDisabled && getAnswerButtonClassName(variant.id) === AnswerStatus.NoAnswer,
-							}
-						)}
-						disabled={isDisabled}
-						onClick={() => onButtonClick(variant.id)}
+			{questionVariants.map((variant) => {
+				const hintProps = fiftyHint && !variant.fiftyHint;
+
+				return (
+					<div
+						className={classNames('button__wrapper', {
+							disabled: isDisabled,
+							'disable-fogging':
+								isDisabled && getAnswerButtonClassName(variant.id) === AnswerStatus.NoAnswer,
+						})}
+						key={variant.id}
 					>
-						<span className="text--primary">{`${variantIdToLabel[variant.id]}: `}</span>
-						{variant.text}
-					</button>
-				</div>
-			))}
+						<button
+							className={classNames(
+								'button__item',
+								'button__item--viewers-result',
+								'question__btn',
+								getAnswerButtonClassName(variant.id),
+								{
+									disabled: isDisabled,
+									'disable-fogging':
+										isDisabled && getAnswerButtonClassName(variant.id) === AnswerStatus.NoAnswer,
+								}
+							)}
+							disabled={isDisabled || hintProps}
+							onClick={() => onButtonClick(variant.id)}
+							style={{
+								'--viewers-vote': !hintProps ? viewerHint[variant.id] : 0,
+							}}
+						>
+							{!hintProps && (
+								<>
+									<span className="text--primary">{`${VARIANT_ID_TO_LABEL[variant.id]}: `}</span>
+									{variant.text}
+								</>
+							)}
+						</button>
+					</div>
+				);
+			})}
 		</div>
 	);
 };
 
-export default GameWindow;
+export { GameWindow };

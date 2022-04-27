@@ -1,0 +1,46 @@
+.hints {
+	display: flex;
+	gap: 16px;
+
+	&__item {
+		width: calc(100px - 32px / 3);
+		height: 50px;
+		position: relative;
+
+		border: #e3a335 solid 3px;
+		border-radius: 47%;
+		overflow: hidden;
+		cursor: pointer;
+		transition: 0.3s;
+
+		&--used {
+			&:after {
+				content: '\2716';
+				position: absolute;
+				top: 50%;
+				left: 50%;
+
+				color: #900000;
+				font-size: 50px;
+				line-height: 50px;
+				transform: translate(-50%, -50%);
+			}
+
+			&:hover {
+				box-shadow: none;
+				cursor: default;
+			}
+		}
+
+		&:hover {
+			box-shadow: inset 0 0 10px blueviolet;
+		}
+
+		&:disabled {
+			&:hover {
+				box-shadow: none;
+				cursor: default;
+			}
+		}
+	}
+}

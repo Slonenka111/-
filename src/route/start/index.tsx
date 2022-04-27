@@ -1,6 +1,8 @@
 import React, { useCallback, useContext } from 'react';
 import logo from '../../assets/images/logo.png';
-import logoOptimize from '../../assets/images/logo_optimize.png';
+import logoWebp from '../../assets/images/logo.webp';
+import logoOptimizeWebp from '../../assets/images/logo_optimize.webp';
+import star from '../../assets/icon/star.svg';
 import './start.scss';
 import { GameContext, WindowState } from '../../store/game-context';
 
@@ -9,17 +11,12 @@ const StartWindow: React.FC = () => {
 		<div className="start-window container">
 			<div className="start-window__img">
 				<div className="start-window__img-wrapper">
-					<div className="start-window__img-line" />
-					<div className="start-window__img-line" />
-					<div className="start-window__img-line" />
-					<div className="start-window__img-line" />
-					<div className="start-window__img-line" />
-					<div className="start-window__img-line" />
+					<img src={star} alt="star" className="start-window__img-star" />
 				</div>
 				<img
 					className="start-window__img-logo"
 					alt="millioner project logo"
-					srcSet={`${logoOptimize}, ${logo} 2x`}
+					srcSet={`${logoOptimizeWebp}, ${logoWebp} 2x`}
 					src={logo}
 				/>
 			</div>

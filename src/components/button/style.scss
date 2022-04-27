@@ -126,7 +126,30 @@ $button-hover-color: #760376;
 		background-color: #1d0c1e;
 		clip-path: polygon(20% 0%, 80% 0%, 99% 50%, 99% 50%, 80% 100%, 20% 100%, 1% 50%, 1% 50%);
 		cursor: pointer;
-		transition: 0.3s;
+		transition: all 0.3s;
+
+		@media (max-width: 678px) {
+			font-size: 18px;
+		}
+
+		&--viewers-result {
+			--viewers-vote: 0;
+			position: relative;
+
+			&:after {
+				content: '';
+				position: absolute;
+				z-index: -1;
+				left: -100%;
+				transition: 2s;
+				transform: translateX(calc(var(--viewers-vote) * 1%));
+				top: 0;
+				display: block;
+				width: 100%;
+				height: 100%;
+				background-color: #487c19;
+			}
+		}
 
 		&--bold {
 			font-weight: bold;
