@@ -18,22 +18,22 @@ const Hints: React.FC<IHintProps> = (props) => {
 
 	return (
 		<div className="hints">
-			{Object.keys(availableHints).map((item: string) => {
+			{Object.entries(availableHints).map(([key, value]) => {
 				const icon =
-					(item as HintsType) === HintsType.fiftyAvailable
+					(key as HintsType) === HintsType.fiftyAvailable
 						? fiftyIcon
-						: (item as HintsType) === HintsType.callAvailable
+						: (key as HintsType) === HintsType.callAvailable
 						? phoneIcon
 						: viewersIcon;
 				return (
 					<button
-						key={item}
+						key={key}
 						className={classNames('hints__item', 'hints--call hints__item', {
-							'hints__item--used': availableHints[item as HintsType],
+							'hints__item--used': value,
 						})}
 						style={{ background: `center / contain no-repeat url(${icon})` }}
-						onClick={() => handleClick(HintsType[item as HintsType])}
-						disabled={isDisabled || availableHints[item as HintsType]}
+						onClick={() => handleClick(HintsType[key as HintsType])}
+						disabled={isDisabled || value}
 					/>
 				);
 			})}
