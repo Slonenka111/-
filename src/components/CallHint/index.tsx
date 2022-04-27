@@ -9,7 +9,7 @@ const CallHint: React.FC = () => {
 
 	useEffect(() => {
 		setAnswer(getRandomPhrases(callHint));
-	}, [answer, callHint]);
+	}, [callHint]);
 
 	return <div className="call-hint">{answer}</div>;
 };

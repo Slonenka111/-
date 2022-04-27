@@ -1,3 +1,5 @@
+import { VARIANT_ID_TO_LABEL } from '../questions';
+
 const phrases = [
 	'Привет! Да, конечно, я знаю, что тут %.',
 	'Хмм... Где-то я уже такое слышал. Я точно не уверен, но это %.',
@@ -15,7 +17,8 @@ const getRandom = (number: number = 1): number => {
 };
 
 const getRandomPhrases = (insertStr: string | undefined): string => {
-	if (insertStr === undefined) {
+	console.log(insertStr);
+	if (insertStr === undefined || Object.values(VARIANT_ID_TO_LABEL).indexOf(insertStr) === -1) {
 		return '';
 	}
 

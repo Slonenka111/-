@@ -16,6 +16,10 @@ import { useNavigate } from 'react-router-dom';
 
 let passQuestions: number[] = [];
 
+const LOCAL_STORAGE_KEY = {
+	GAME_STATE: 'GameState',
+};
+
 const createGameStateString = (
 	windowState: WindowState,
 	resultGame: ResultGame,
@@ -80,7 +84,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 		let gameState;
 
 		try {
-			gameState = JSON.parse(localStorage.getItem('GameState') as string);
+			gameState = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY.GAME_STATE) as string);
 		} catch (e) {
 			console.error(e);
 		}
@@ -99,7 +103,11 @@ const GameContextWrapper: React.FC = ({ children }) => {
 				callHint,
 				viewerHint
 			);
-			if (newGameState) localStorage.setItem('GameState', newGameState);
+
+			if (newGameState) {
+				localStorage.setItem(LOCAL_STORAGE_KEY.GAME_STATE, newGameState);
+			}
+
 			switchWindow(WindowState.start);
 		} else {
 			switchWindow(gameState.windowState);
@@ -132,7 +140,9 @@ const GameContextWrapper: React.FC = ({ children }) => {
 			callHint,
 			viewerHint
 		);
-		if (newGameState) localStorage.setItem('GameState', newGameState);
+		if (newGameState) {
+			localStorage.setItem(LOCAL_STORAGE_KEY.GAME_STATE, newGameState);
+		}
 	}, [
 		windowState,
 		resultGame,
