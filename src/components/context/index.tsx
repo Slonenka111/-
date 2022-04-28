@@ -173,6 +173,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 
 			// Обработка верного ответа на 15-й вопрос - победа
 			if (questionNumber === 14) {
+				setQuestionNumber((prev) => prev + 1);
 				switchWindow(WindowState.end);
 				setResultGame(ResultGame.win);
 				return;
