@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import React, {useCallback, useContext, useEffect, useRef, useState} from 'react';
 import {
 	GameContext,
 	ResultGame,
@@ -8,11 +8,11 @@ import {
 	defaultViewerHint,
 } from '../../store/game-context';
 import Timer from '../../components/Timer/Timer';
-import { LevelRoadmap } from '../../components/LevelRoadmap/LevelRoadmap';
-import { getCallHint, getViewerHint, VARIANT_ID_TO_LABEL } from '../../components/questions';
-import { Hints } from '../../components/Hints';
-import { CallHint } from '../../components/CallHint';
-import { IVariants } from '../../data/questions';
+import {LevelRoadmap} from '../../components/LevelRoadmap/LevelRoadmap';
+import {getCallHint, getViewerHint, VARIANT_ID_TO_LABEL} from '../../components/questions';
+import {Hints} from '../../components/Hints';
+import {CallHint} from '../../components/CallHint';
+import {IVariants} from '../../data/questions';
 import classNames from 'classnames';
 import '../../components/questions/style.scss';
 import './style.scss';
@@ -78,7 +78,10 @@ const GameWindow: React.FC = () => {
 				case HintsType.viewersAvailable:
 					setPaused(true);
 					switchViewerHint(getViewerHint(questionId, difficult, fiftyHint));
-					setTimeout(setPaused, 2000, false);
+					setTimeout(() => {
+						if (answerStatus === AnswerStatus.NoAnswer)
+							setPaused(false);
+					}, 2000);
 					break;
 				default:
 					console.error('Получен неизвестный тип подсказки');
@@ -94,6 +97,7 @@ const GameWindow: React.FC = () => {
 			switchCallHint,
 			switchFiftyHint,
 			switchViewerHint,
+			answerStatus,
 		]
 	);
 
@@ -144,10 +148,10 @@ const GameWindow: React.FC = () => {
 
 	return (
 		<div className="game-window container">
-			{callHint && <CallHint />}
+			{callHint && <CallHint/>}
 			<div className="game-window__header">
 				<div className="game-window__header--side">
-					<Hints handleClick={handleClickAvailableHints} isDisabled={isDisabled} />
+					<Hints handleClick={handleClickAvailableHints} isDisabled={isDisabled}/>
 				</div>
 				<div className="game-window__header--middle">
 					<Timer
@@ -159,7 +163,7 @@ const GameWindow: React.FC = () => {
 					/>
 				</div>
 				<div className="game-window__header--side">
-					<LevelRoadmap currentLevel={questionNumber + 1} safetyLevels={[5, 10, 15]} />
+					<LevelRoadmap currentLevel={questionNumber + 1} safetyLevels={[5, 10, 15]}/>
 				</div>
 			</div>
 			<div className="question">
@@ -229,7 +233,8 @@ const ButtonsContainer: React.FC<ButtonsContainerProps> = (props) => {
 						>
 							{!hintProps && (
 								<>
-									<span className="text--primary">{`${VARIANT_ID_TO_LABEL[variant.id]}: `}</span>
+									<span
+										className="text--primary">{`${VARIANT_ID_TO_LABEL[variant.id]}: `}</span>
 									{variant.text}
 								</>
 							)}
@@ -241,4 +246,4 @@ const ButtonsContainer: React.FC<ButtonsContainerProps> = (props) => {
 	);
 };
 
-export { GameWindow };
+export {GameWindow};
