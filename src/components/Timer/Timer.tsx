@@ -20,7 +20,7 @@ declare module 'react' {
 }
 
 const getLeftSeconds = (secondsLeftOnStart: number, startDateTime: number): number => {
-	const currentDate = new Date().getTime();
+	const currentDate = Date.now();
 	const passedSeconds = Math.round((currentDate - startDateTime) / 1000);
 	return secondsLeftOnStart - passedSeconds;
 }
@@ -28,7 +28,7 @@ const getLeftSeconds = (secondsLeftOnStart: number, startDateTime: number): numb
 const Timer: React.FC<Props> = (timerProps) => {
 	const {paused, duration, onTimeExpiration, onPause} = timerProps;
 	const [seconds, setSeconds] = useState(duration);
-	const startDate = useRef(new Date().getTime());
+	const startDate = useRef(Date.now());
 	const [expired, setExpired] = useState(false);
 	const timer = useRef<number | undefined>();
 	const startSeconds = useRef(duration);
@@ -61,13 +61,13 @@ const Timer: React.FC<Props> = (timerProps) => {
 			}
 		}
 		else {
-			storeTimerPropertiesOnStart(new Date().getTime(), duration);
+			storeTimerPropertiesOnStart(Date.now(), duration);
 		}
 	}, []);
 
 	useEffect(() => {
 		if (!paused && mounted.current) {
-			storeTimerPropertiesOnStart(new Date().getTime(), seconds);
+			storeTimerPropertiesOnStart(Date.now(), seconds);
 		}
 		mounted.current = true
 	}, [paused])
