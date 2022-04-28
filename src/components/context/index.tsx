@@ -13,7 +13,7 @@ import {
 } from '../../store/game-context';
 import { getQuestionById, getRandomQuestion, getRightAnswer } from '../questions';
 import { useNavigate } from 'react-router-dom';
-import {TIMER_STATE_KEY} from '../../components/Timer/Timer';
+import { TIMER_STATE_KEY } from '../../components/Timer/Timer';
 
 let passQuestions: number[] = [];
 
