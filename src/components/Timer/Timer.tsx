@@ -2,6 +2,8 @@ import React, { CSSProperties, useCallback, useEffect, useRef, useState } from '
 import './Timer.scss';
 import classNames from 'classnames';
 
+export const TIMER_STATE_KEY = 'TimerState';
+
 interface Props {
 	paused: boolean;
 	duration: number;
@@ -17,15 +19,64 @@ declare module 'react' {
 	}
 }
 
+const getLeftSeconds = (secondsLeftOnStart: number, startDateTime: number): number => {
+	const currentDate = Date.now();
+	const passedSeconds = Math.round((currentDate - startDateTime) / 1000);
+	return secondsLeftOnStart - passedSeconds;
+};
+
 const Timer: React.FC<Props> = (timerProps) => {
 	const { paused, duration, onTimeExpiration, onPause } = timerProps;
 	const [seconds, setSeconds] = useState(duration);
+	const startDate = useRef(Date.now());
 	const [expired, setExpired] = useState(false);
 	const timer = useRef<number | undefined>();
+	const startSeconds = useRef(duration);
+	const mounted = useRef(false);
 	const clearInterval = useCallback((timer) => {
 		if (timer.current) window.clearInterval(timer.current);
 		timer.current = undefined;
 	}, []);
+	const storeTimerPropertiesOnStart = (
+		dateOnTimerStarted: number,
+		secondsOnTimerStarted: number
+	): void => {
+		startDate.current = dateOnTimerStarted;
+		startSeconds.current = secondsOnTimerStarted;
+		localStorage.setItem(
+			TIMER_STATE_KEY,
+			JSON.stringify({
+				startDate: dateOnTimerStarted,
+				secondsOnStart: secondsOnTimerStarted,
+			})
+		);
+	};
+
+	useEffect(() => {
+		const timerState = localStorage.getItem(TIMER_STATE_KEY);
+		if (timerState != null) {
+			const parsedTimerState = JSON.parse(timerState);
+			if (
+				typeof parsedTimerState === 'object' &&
+				parsedTimerState.startDate &&
+				parsedTimerState.secondsOnStart
+			) {
+				startDate.current = parsedTimerState.startDate;
+				startSeconds.current = parsedTimerState.secondsOnStart;
+				const leftSeconds = getLeftSeconds(startSeconds.current, startDate.current);
+				setSeconds(Math.max(leftSeconds, 0));
+			}
+		} else {
+			storeTimerPropertiesOnStart(Date.now(), duration);
+		}
+	}, []);
+
+	useEffect(() => {
+		if (!paused && mounted.current) {
+			storeTimerPropertiesOnStart(Date.now(), seconds);
+		}
+		mounted.current = true;
+	}, [paused]);
 
 	useEffect(() => {
 		if (seconds <= 0) {
@@ -33,13 +84,14 @@ const Timer: React.FC<Props> = (timerProps) => {
 				setExpired(true);
 				onTimeExpiration();
 			}
-		} else {
-			paused
-				? onPause(seconds)
-				: (timer.current = window.setInterval(() => setSeconds((v) => v - 1), 1000));
-		}
+		} else if (!paused) {
+			timer.current = window.setInterval(() => {
+				const secondsLeft = getLeftSeconds(startSeconds.current, startDate.current);
+				setSeconds(Math.max(secondsLeft, 0));
+			}, 1000);
+		} else onPause(seconds);
 		return () => clearInterval(timer);
-	}, [seconds, clearInterval, paused, onPause, expired, onTimeExpiration]);
+	}, [seconds, clearInterval, expired, onTimeExpiration, paused]);
 
 	const timerStyle: CSSProperties = {
 		'--deg': `${360 - (360 / duration) * seconds} `,
