@@ -50,7 +50,6 @@ const Timer: React.FC<Props> = (timerProps) => {
 	}
 
 	useEffect(() => {
-		console.log(mounted.current);
 		const timerState = localStorage.getItem(TIMER_STATE_KEY);
 		if (timerState != null) {
 			const parsedTimerState = JSON.parse(timerState);
@@ -62,7 +61,6 @@ const Timer: React.FC<Props> = (timerProps) => {
 			}
 		}
 		else {
-			console.log('on mount')
 			storeTimerPropertiesOnStart(new Date().getTime(), duration);
 		}
 	}, []);
