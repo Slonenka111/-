@@ -78,7 +78,9 @@ const GameWindow: React.FC = () => {
 				case HintsType.viewersAvailable:
 					setPaused(true);
 					switchViewerHint(getViewerHint(questionId, difficult, fiftyHint));
-					setTimeout(setPaused, 2000, false);
+					setTimeout(() => {
+						if (answerStatus === AnswerStatus.NoAnswer) setPaused(false);
+					}, 2000);
 					break;
 				default:
 					console.error('Получен неизвестный тип подсказки');
@@ -94,6 +96,7 @@ const GameWindow: React.FC = () => {
 			switchCallHint,
 			switchFiftyHint,
 			switchViewerHint,
+			answerStatus,
 		]
 	);
 
