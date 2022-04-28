@@ -13,6 +13,7 @@ import {
 } from '../../store/game-context';
 import { getQuestionById, getRandomQuestion, getRightAnswer } from '../questions';
 import { useNavigate } from 'react-router-dom';
+import {TIMER_STATE_KEY} from '../../components/Timer/Timer';
 
 let passQuestions: number[] = [];
 
@@ -162,6 +163,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 
 	const gameMove = useCallback(
 		(index, secondsLeft) => {
+			localStorage.removeItem(TIMER_STATE_KEY);
 			// Обработка не верного ответа - проигрыша
 			if (index !== rightAnswer) {
 				switchWindow(WindowState.end);
@@ -194,6 +196,7 @@ const GameContextWrapper: React.FC = ({ children }) => {
 	);
 
 	const clearStates = useCallback(() => {
+		localStorage.removeItem(TIMER_STATE_KEY);
 		switchWindow(WindowState.game);
 		setResultGame(ResultGame.default);
 		setQuestionNumber(0);
