@@ -4,7 +4,7 @@ import {
 	IVariants,
 	QuestionDifficult,
 	TAnswerNumbers,
-} from '../../data/questions';
+} from '../../data/questions';src/data/вопросы.ts
 import { defaultViewerHint, TViewerHint } from '../../store/game-context';
 
 type TgetQuestion = [questionText: string, questionVariants: IVariants[], questionId: number];
