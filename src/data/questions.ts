@@ -27,7 +27,7 @@ const Questions: IQuestions[] = [
 	{
 		id: 1000,
 		difficult: QuestionDifficult.easy,
-		text: 'Как называется популярный рецепт приготовления макарон с мясом?',
+		text: 'Как называется популярный рецепт приготовления макарон с мясом?',Когда основа
 		variants: [
 			{
 				id: 1,
